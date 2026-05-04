@@ -1,0 +1,877 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mafia Wars — Esports Organization</title>
+    <meta name="description" content="Mafia Wars Esports — Equipo competitivo de Rainbow Six Siege. Since 2025.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&family=Bebas+Neue&display=swap" rel="stylesheet">
+    <style>
+        /* ===== RESET & BASE ===== */
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+        :root {
+            --red: #e21a1a;
+            --dark-red: #8b0000;
+            --black: #0a0a0a;
+            --dark: #111111;
+            --dark2: #1a1a1a;
+            --dark3: #222222;
+            --white: #ffffff;
+            --gray: #888888;
+            --light-gray: #cccccc;
+        }
+        html { scroll-behavior: smooth; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--black);
+            color: var(--white);
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+        a { text-decoration: none; color: inherit; }
+        ul { list-style: none; }
+        img { max-width: 100%; display: block; }
+
+        /* ===== LOADER ===== */
+        #loader {
+            position: fixed; inset: 0; background: var(--black); z-index: 10000;
+            display: flex; align-items: center; justify-content: center; flex-direction: column; gap: 20px;
+            transition: opacity 0.5s, visibility 0.5s;
+        }
+        #loader.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
+        #loader .loader-text {
+            font-family: 'Bebas Neue', sans-serif; font-size: 3rem; letter-spacing: 8px;
+            color: var(--red); animation: pulse 1.2s ease-in-out infinite;
+        }
+        .loader-bar { width: 200px; height: 3px; background: var(--dark3); border-radius: 2px; overflow: hidden; }
+        .loader-bar-fill { width: 0%; height: 100%; background: var(--red); animation: loadBar 1.5s ease-in-out forwards; }
+        @keyframes loadBar { to { width: 100%; } }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+
+        /* ===== NAV ===== */
+        nav {
+            position: fixed; top: 0; width: 100%; z-index: 1000; padding: 0 40px; height: 70px;
+            display: flex; align-items: center; justify-content: space-between;
+            background: rgba(10, 10, 10, 0.85); backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(226, 26, 26, 0.15); transition: all 0.3s;
+        }
+        nav.scrolled { background: rgba(10, 10, 10, 0.95); border-bottom: 1px solid rgba(226, 26, 26, 0.4); }
+        .nav-logo { font-family: 'Bebas Neue', sans-serif; font-size: 1.8rem; letter-spacing: 3px; display: flex; align-items: center; gap: 8px; }
+        .nav-logo span { color: var(--red); }
+        .nav-center { display: flex; gap: 32px; align-items: center; }
+        .nav-center a {
+            font-family: 'Oswald', sans-serif; font-size: 0.85rem; letter-spacing: 2px;
+            text-transform: uppercase; color: var(--light-gray); transition: color 0.3s; position: relative;
+        }
+        .nav-center a::after {
+            content: ''; position: absolute; bottom: -4px; left: 0; width: 0; height: 2px;
+            background: var(--red); transition: width 0.3s;
+        }
+        .nav-center a:hover { color: var(--white); }
+        .nav-center a:hover::after { width: 100%; }
+        .nav-right { display: flex; align-items: center; gap: 16px; }
+
+        /* ===== LANGUAGE SWITCHER ===== */
+        .lang-switcher {
+            position: relative; display: flex; align-items: center;
+        }
+        .lang-btn {
+            background: transparent; border: 1px solid rgba(226,26,26,0.3); color: var(--white);
+            font-family: 'Oswald', sans-serif; font-size: 0.75rem; letter-spacing: 2px;
+            padding: 6px 14px; cursor: pointer; text-transform: uppercase; transition: all 0.3s;
+            display: flex; align-items: center; gap: 6px;
+            clip-path: polygon(0 0, calc(100% - 6px) 0, 100% 6px, 100% 100%, 6px 100%, 0 calc(100% - 6px));
+        }
+        .lang-btn:hover { border-color: var(--red); background: rgba(226,26,26,0.1); }
+        .lang-btn svg { width: 10px; height: 10px; fill: var(--white); transition: transform 0.3s; }
+        .lang-switcher.open .lang-btn svg { transform: rotate(180deg); }
+        .lang-dropdown {
+            position: absolute; top: calc(100% + 8px); right: 0; background: var(--dark2);
+            border: 1px solid rgba(226,26,26,0.2); min-width: 140px; z-index: 100;
+            opacity: 0; visibility: hidden; transform: translateY(-8px); transition: all 0.25s;
+            clip-path: polygon(0 0, calc(100% - 8px) 0, 100% 8px, 100% 100%, 8px 100%, 0 calc(100% - 8px));
+        }
+        .lang-switcher.open .lang-dropdown { opacity: 1; visibility: visible; transform: translateY(0); }
+        .lang-option {
+            display: block; width: 100%; padding: 10px 16px; background: none; border: none;
+            color: var(--light-gray); font-family: 'Oswald', sans-serif; font-size: 0.8rem;
+            letter-spacing: 1px; text-align: left; cursor: pointer; transition: all 0.2s;
+        }
+        .lang-option:hover { background: rgba(226,26,26,0.15); color: var(--white); }
+        .lang-option.active { color: var(--red); }
+
+        .hamburger { display: none; flex-direction: column; gap: 5px; cursor: pointer; z-index: 1001; }
+        .hamburger span { width: 25px; height: 2px; background: var(--white); transition: all 0.3s; }
+        .hamburger.active span:nth-child(1) { transform: rotate(45deg) translate(5px, 5px); }
+        .hamburger.active span:nth-child(2) { opacity: 0; }
+        .hamburger.active span:nth-child(3) { transform: rotate(-45deg) translate(5px, -5px); }
+
+        /* ===== HERO ===== */
+        #hero { min-height: 100vh; display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden; }
+        .hero-bg {
+            position: absolute; inset: 0;
+            background: radial-gradient(ellipse at 20% 50%, rgba(226,26,26,0.15) 0%, transparent 60%),
+                        radial-gradient(ellipse at 80% 50%, rgba(139,0,0,0.1) 0%, transparent 60%), var(--black);
+        }
+        .hero-lines { position: absolute; inset: 0; overflow: hidden; }
+        .hero-lines::before, .hero-lines::after {
+            content: ''; position: absolute; width: 1px; height: 200%;
+            background: linear-gradient(to bottom, transparent, rgba(226,26,26,0.2), transparent);
+            animation: lineFloat 8s ease-in-out infinite;
+        }
+        .hero-lines::before { left: 20%; } .hero-lines::after { right: 25%; animation-delay: 4s; }
+        @keyframes lineFloat { 0%, 100% { transform: translateY(-30%); } 50% { transform: translateY(-10%); } }
+        .hero-content { text-align: center; position: relative; z-index: 2; padding: 0 20px; }
+        .hero-badge {
+            display: inline-block; font-family: 'Oswald', sans-serif; font-size: 0.75rem;
+            letter-spacing: 4px; text-transform: uppercase; color: var(--red);
+            border: 1px solid rgba(226,26,26,0.4); padding: 8px 24px; margin-bottom: 30px;
+            animation: fadeInUp 0.8s ease-out 1.8s both;
+        }
+        .hero-title {
+            font-family: 'Bebas Neue', sans-serif; font-size: clamp(4rem, 12vw, 10rem);
+            line-height: 0.9; letter-spacing: 6px; margin-bottom: 10px;
+            animation: fadeInUp 0.8s ease-out 2s both;
+        }
+        .hero-title .red { color: var(--red); }
+        .hero-subtitle {
+            font-family: 'Oswald', sans-serif; font-size: clamp(1rem, 2.5vw, 1.5rem);
+            letter-spacing: 6px; text-transform: uppercase; color: var(--gray); margin-bottom: 40px;
+            animation: fadeInUp 0.8s ease-out 2.2s both;
+        }
+        .hero-cta { display: inline-flex; gap: 16px; flex-wrap: wrap; justify-content: center; animation: fadeInUp 0.8s ease-out 2.4s both; }
+        .btn {
+            font-family: 'Oswald', sans-serif; font-size: 0.85rem; letter-spacing: 3px;
+            text-transform: uppercase; padding: 14px 36px; border: none; cursor: pointer;
+            transition: all 0.3s; position: relative; overflow: hidden;
+        }
+        .btn-primary {
+            background: var(--red); color: var(--white);
+            clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 12px 100%, 0 calc(100% - 12px));
+        }
+        .btn-primary:hover { background: #ff2a2a; transform: translateY(-2px); box-shadow: 0 8px 30px rgba(226,26,26,0.4); }
+        .btn-outline {
+            background: transparent; color: var(--white); border: 1px solid rgba(255,255,255,0.2);
+            clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 12px 100%, 0 calc(100% - 12px));
+        }
+        .btn-outline:hover { border-color: var(--red); color: var(--red); }
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+        .scroll-indicator {
+            position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%);
+            display: flex; flex-direction: column; align-items: center; gap: 8px;
+            animation: fadeInUp 0.8s ease-out 2.8s both;
+        }
+        .scroll-indicator span { font-family: 'Oswald', sans-serif; font-size: 0.65rem; letter-spacing: 3px; text-transform: uppercase; color: var(--gray); }
+        .scroll-line { width: 1px; height: 40px; background: linear-gradient(to bottom, var(--red), transparent); animation: scrollPulse 2s ease-in-out infinite; }
+        @keyframes scrollPulse { 0%, 100% { opacity: 1; height: 40px; } 50% { opacity: 0.3; height: 20px; } }
+
+        /* ===== SECTION COMMON ===== */
+        section { padding: 100px 40px; position: relative; }
+        .section-header { text-align: center; margin-bottom: 60px; }
+        .section-tag { font-family: 'Oswald', sans-serif; font-size: 0.7rem; letter-spacing: 4px; text-transform: uppercase; color: var(--red); margin-bottom: 12px; }
+        .section-title { font-family: 'Bebas Neue', sans-serif; font-size: clamp(2.5rem, 5vw, 4rem); letter-spacing: 4px; }
+        .section-line { width: 60px; height: 3px; background: var(--red); margin: 16px auto 0; }
+        .divider { width: 100%; height: 1px; background: linear-gradient(to right, transparent, rgba(226,26,26,0.3), transparent); }
+
+        /* ===== MARQUEE ===== */
+        .marquee-container { overflow: hidden; padding: 16px 0; background: var(--red); position: relative; }
+        .marquee-track { display: flex; width: max-content; animation: marquee 20s linear infinite; }
+        .marquee-item { font-family: 'Bebas Neue', sans-serif; font-size: 1rem; letter-spacing: 6px; white-space: nowrap; padding: 0 40px; color: var(--white); }
+        @keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+
+        /* ===== ROSTER ===== */
+        #roster { background: var(--dark); }
+        .roster-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; max-width: 1100px; margin: 0 auto; }
+        .player-card {
+            background: var(--dark2); border: 1px solid rgba(226,26,26,0.1); position: relative;
+            overflow: hidden; cursor: pointer; transition: all 0.4s;
+            clip-path: polygon(0 0, calc(100% - 16px) 0, 100% 16px, 100% 100%, 16px 100%, 0 calc(100% - 16px));
+        }
+        .player-card:hover { border-color: var(--red); transform: translateY(-6px); box-shadow: 0 20px 40px rgba(226,26,26,0.15); }
+        .player-card:hover .player-bg { transform: scale(1.05); }
+        .player-avatar { width: 100%; aspect-ratio: 3/4; position: relative; overflow: hidden; background: linear-gradient(135deg, var(--dark2), var(--dark3)); }
+        .player-bg {
+            width: 100%; height: 100%; display: flex; align-items: center; justify-content: center;
+            transition: transform 0.4s; background: linear-gradient(180deg, rgba(226,26,26,0.05) 0%, rgba(226,26,26,0.15) 100%);
+        }
+        .player-initial { font-family: 'Bebas Neue', sans-serif; font-size: 4rem; color: rgba(226,26,26,0.3); letter-spacing: 4px; }
+        .player-info { padding: 16px; text-align: center; position: relative; }
+        .player-info::before { content: ''; position: absolute; top: 0; left: 20%; width: 60%; height: 2px; background: var(--red); }
+        .player-name { font-family: 'Oswald', sans-serif; font-size: 1.1rem; letter-spacing: 3px; text-transform: uppercase; font-weight: 600; }
+        .player-role { font-size: 0.7rem; letter-spacing: 2px; text-transform: uppercase; color: var(--gray); margin-top: 4px; }
+        .staff-section { margin-top: 50px; text-align: center; }
+        .staff-title { font-family: 'Oswald', sans-serif; font-size: 0.75rem; letter-spacing: 4px; text-transform: uppercase; color: var(--gray); margin-bottom: 20px; }
+        .staff-grid { display: flex; justify-content: center; gap: 40px; flex-wrap: wrap; }
+        .staff-name { font-family: 'Oswald', sans-serif; font-size: 1.1rem; letter-spacing: 2px; text-transform: uppercase; }
+        .staff-role { font-size: 0.7rem; letter-spacing: 2px; text-transform: uppercase; color: var(--red); margin-top: 2px; }
+
+        /* ===== SHOP ===== */
+        #shop { background: var(--black); }
+        .shop-container { max-width: 1000px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: start; }
+        .jersey-display { position: relative; }
+        .jersey-card {
+            background: var(--dark2); border: 1px solid rgba(226,26,26,0.1); padding: 40px;
+            clip-path: polygon(0 0, calc(100% - 20px) 0, 100% 20px, 100% 100%, 20px 100%, 0 calc(100% - 20px));
+            transition: border-color 0.3s; position: relative; overflow: hidden;
+        }
+        .jersey-card:hover { border-color: var(--red); }
+        .jersey-visual {
+            width: 100%; display: flex; align-items: center; justify-content: center;
+            background: linear-gradient(135deg, #f0f0f0, #e8e8e8); border-radius: 4px; position: relative; overflow: hidden;
+        }
+        .jersey-visual img {
+            width: 100%; height: auto; display: block; transition: transform 0.5s;
+        }
+        .jersey-card:hover .jersey-visual img { transform: scale(1.03); }
+        .jersey-badge {
+            position: absolute; top: 16px; right: 16px; background: var(--red); color: var(--white);
+            font-family: 'Oswald', sans-serif; font-size: 0.7rem; letter-spacing: 2px; padding: 6px 14px;
+            text-transform: uppercase;
+        }
+        .jersey-details { margin-top: 24px; }
+        .jersey-name { font-family: 'Oswald', sans-serif; font-size: 1.4rem; letter-spacing: 3px; text-transform: uppercase; }
+        .jersey-desc { color: var(--gray); font-size: 0.85rem; margin-top: 8px; }
+        .jersey-price {
+            font-family: 'Bebas Neue', sans-serif; font-size: 2.5rem; color: var(--red); margin-top: 12px;
+        }
+
+        /* Order form */
+        .order-section h3 {
+            font-family: 'Oswald', sans-serif; font-size: 1.2rem; letter-spacing: 3px;
+            text-transform: uppercase; margin-bottom: 24px; padding-bottom: 12px;
+            border-bottom: 1px solid rgba(226,26,26,0.2);
+        }
+        .form-group { margin-bottom: 20px; }
+        .form-group label {
+            display: block; font-family: 'Oswald', sans-serif; font-size: 0.75rem;
+            letter-spacing: 2px; text-transform: uppercase; color: var(--gray); margin-bottom: 8px;
+        }
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%; padding: 12px 16px; background: var(--dark2); border: 1px solid rgba(226,26,26,0.15);
+            color: var(--white); font-family: 'Inter', sans-serif; font-size: 0.9rem;
+            transition: border-color 0.3s; outline: none;
+            clip-path: polygon(0 0, calc(100% - 8px) 0, 100% 8px, 100% 100%, 8px 100%, 0 calc(100% - 8px));
+        }
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-color: var(--red); }
+        .form-group select option { background: var(--dark2); color: var(--white); }
+        .form-group textarea { resize: vertical; min-height: 80px; }
+        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+        .size-options { display: flex; gap: 10px; flex-wrap: wrap; }
+        .size-btn {
+            width: 48px; height: 48px; background: var(--dark2); border: 1px solid rgba(226,26,26,0.15);
+            color: var(--light-gray); font-family: 'Oswald', sans-serif; font-size: 0.85rem;
+            cursor: pointer; transition: all 0.3s; display: flex; align-items: center; justify-content: center;
+            clip-path: polygon(0 0, calc(100% - 6px) 0, 100% 6px, 100% 100%, 6px 100%, 0 calc(100% - 6px));
+        }
+        .size-btn:hover { border-color: var(--red); color: var(--white); }
+        .size-btn.selected { background: var(--red); border-color: var(--red); color: var(--white); }
+        .quantity-control { display: flex; align-items: center; gap: 16px; }
+        .qty-btn {
+            width: 40px; height: 40px; background: var(--dark2); border: 1px solid rgba(226,26,26,0.15);
+            color: var(--white); font-family: 'Oswald', sans-serif; font-size: 1.2rem;
+            cursor: pointer; transition: all 0.3s; display: flex; align-items: center; justify-content: center;
+        }
+        .qty-btn:hover { border-color: var(--red); background: rgba(226,26,26,0.1); }
+        .qty-display {
+            font-family: 'Bebas Neue', sans-serif; font-size: 1.5rem; min-width: 30px; text-align: center;
+        }
+        .order-total {
+            font-family: 'Oswald', sans-serif; font-size: 1rem; letter-spacing: 2px; margin: 24px 0;
+            padding: 16px; background: var(--dark2); border: 1px solid rgba(226,26,26,0.15);
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        .order-total .total-price { font-family: 'Bebas Neue', sans-serif; font-size: 1.8rem; color: var(--red); }
+        .btn-order {
+            width: 100%; padding: 16px; background: var(--red); color: var(--white); border: none;
+            font-family: 'Oswald', sans-serif; font-size: 1rem; letter-spacing: 3px;
+            text-transform: uppercase; cursor: pointer; transition: all 0.3s;
+            clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 12px 100%, 0 calc(100% - 12px));
+        }
+        .btn-order:hover { background: #ff2a2a; box-shadow: 0 8px 30px rgba(226,26,26,0.4); }
+        .btn-order:disabled { background: var(--dark3); cursor: not-allowed; box-shadow: none; }
+
+        /* Order success */
+        .order-success {
+            display: none; text-align: center; padding: 40px 20px;
+        }
+        .order-success.show { display: block; }
+        .order-success svg { width: 60px; height: 60px; margin: 0 auto 20px; }
+        .order-success h3 {
+            font-family: 'Bebas Neue', sans-serif; font-size: 2rem; letter-spacing: 3px; color: var(--red);
+        }
+        .order-success p { color: var(--gray); margin-top: 10px; }
+
+        /* ===== ABOUT ===== */
+        #about { background: var(--dark); }
+        .about-content { max-width: 900px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center; }
+        .about-text p { color: var(--light-gray); font-size: 0.95rem; line-height: 1.8; margin-bottom: 20px; }
+        .about-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+        .stat-card {
+            background: var(--dark2); border: 1px solid rgba(226,26,26,0.1); padding: 28px; text-align: center;
+            clip-path: polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 10px 100%, 0 calc(100% - 10px));
+            transition: border-color 0.3s;
+        }
+        .stat-card:hover { border-color: var(--red); }
+        .stat-number { font-family: 'Bebas Neue', sans-serif; font-size: 2.8rem; color: var(--red); line-height: 1; }
+        .stat-label { font-family: 'Oswald', sans-serif; font-size: 0.7rem; letter-spacing: 2px; text-transform: uppercase; color: var(--gray); margin-top: 8px; }
+
+        /* ===== SPONSORS ===== */
+        #sponsors { background: var(--black); }
+        .sponsors-grid { display: flex; justify-content: center; align-items: center; gap: 60px; flex-wrap: wrap; max-width: 900px; margin: 0 auto; }
+        .sponsor-item {
+            padding: 20px 32px; background: var(--dark2); border: 1px solid rgba(255,255,255,0.05);
+            transition: all 0.3s;
+            clip-path: polygon(0 0, calc(100% - 8px) 0, 100% 8px, 100% 100%, 8px 100%, 0 calc(100% - 8px));
+        }
+        .sponsor-item:hover { border-color: rgba(226,26,26,0.3); transform: translateY(-3px); }
+        .sponsor-name { font-family: 'Oswald', sans-serif; font-size: 1.3rem; letter-spacing: 3px; text-transform: uppercase; color: var(--light-gray); transition: color 0.3s; }
+        .sponsor-item:hover .sponsor-name { color: var(--white); }
+
+        /* ===== CONTACT ===== */
+        #contact { background: var(--dark); text-align: center; }
+        .social-links { display: flex; justify-content: center; gap: 24px; margin-top: 40px; }
+        .social-link {
+            width: 56px; height: 56px; border: 1px solid rgba(226,26,26,0.3);
+            display: flex; align-items: center; justify-content: center; transition: all 0.3s;
+            clip-path: polygon(0 0, calc(100% - 8px) 0, 100% 8px, 100% 100%, 8px 100%, 0 calc(100% - 8px));
+        }
+        .social-link:hover { background: var(--red); border-color: var(--red); transform: translateY(-3px); }
+        .social-link svg { width: 22px; height: 22px; fill: var(--white); }
+
+        /* ===== FOOTER ===== */
+        footer { padding: 30px 40px; text-align: center; background: var(--black); border-top: 1px solid rgba(226,26,26,0.1); }
+        .footer-text { font-family: 'Oswald', sans-serif; font-size: 0.7rem; letter-spacing: 3px; text-transform: uppercase; color: var(--gray); }
+        .footer-text span { color: var(--red); }
+
+        /* ===== ANIMATIONS ===== */
+        .reveal { opacity: 0; transform: translateY(40px); transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1); }
+        .reveal.visible { opacity: 1; transform: translateY(0); }
+        .glitch { position: relative; }
+        .glitch::before, .glitch::after { content: attr(data-text); position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
+        .glitch::before { animation: glitch1 3s infinite; color: var(--red); z-index: -1; }
+        .glitch::after { animation: glitch2 3s infinite; color: rgba(226,26,26,0.3); z-index: -2; }
+        @keyframes glitch1 { 0%, 95%, 100% { transform: translate(0); } 96% { transform: translate(-3px, 2px); } 97% { transform: translate(3px, -2px); } }
+        @keyframes glitch2 { 0%, 95%, 100% { transform: translate(0); } 96% { transform: translate(3px, -2px); } 97% { transform: translate(-3px, 2px); } }
+
+        /* ===== NOISE ===== */
+        body::after {
+            content: ''; position: fixed; inset: 0;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+            pointer-events: none; z-index: 9998; opacity: 0.4;
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 900px) {
+            .roster-grid { grid-template-columns: repeat(2, 1fr); }
+            .about-content { grid-template-columns: 1fr; gap: 40px; }
+            .shop-container { grid-template-columns: 1fr; }
+            nav { padding: 0 20px; }
+            section { padding: 80px 20px; }
+        }
+        @media (max-width: 768px) {
+            .nav-center {
+                position: fixed; top: 0; right: -100%; width: 70%; height: 100vh;
+                background: rgba(10,10,10,0.98); flex-direction: column; justify-content: center;
+                gap: 28px; transition: right 0.4s; border-left: 1px solid rgba(226,26,26,0.2);
+            }
+            .nav-center.open { right: 0; }
+            .hamburger { display: flex; }
+            .sponsors-grid { gap: 30px; }
+            .form-row { grid-template-columns: 1fr; }
+        }
+        @media (max-width: 600px) {
+            .roster-grid { grid-template-columns: 1fr 1fr; gap: 12px; }
+            .player-initial { font-size: 2.5rem; }
+            .staff-grid { gap: 24px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- LOADER -->
+    <div id="loader">
+        <div class="loader-text">MAFIA WARS</div>
+        <div class="loader-bar"><div class="loader-bar-fill"></div></div>
+    </div>
+
+    <!-- NAVIGATION -->
+    <nav id="navbar">
+        <a href="#hero" class="nav-logo">MAFIA <span>WARS</span></a>
+        <ul class="nav-center" id="navLinks">
+            <li><a href="#hero" onclick="closeNav()" data-i18n="nav_home">Inicio</a></li>
+            <li><a href="#roster" onclick="closeNav()" data-i18n="nav_roster">Roster</a></li>
+            <li><a href="#shop" onclick="closeNav()" data-i18n="nav_shop">Tienda</a></li>
+            <li><a href="#about" onclick="closeNav()" data-i18n="nav_about">Nosotros</a></li>
+            <li><a href="#sponsors" onclick="closeNav()">Sponsors</a></li>
+            <li><a href="#contact" onclick="closeNav()" data-i18n="nav_contact">Contacto</a></li>
+        </ul>
+        <div class="nav-right">
+            <div class="lang-switcher" id="langSwitcher">
+                <button class="lang-btn" onclick="toggleLang()">
+                    <span id="currentLang">ES</span>
+                    <svg viewBox="0 0 12 12"><path d="M2 4l4 4 4-4"/></svg>
+                </button>
+                <div class="lang-dropdown">
+                    <button class="lang-option active" onclick="setLang('es')">Espanol</button>
+                    <button class="lang-option" onclick="setLang('en')">English</button>
+                    <button class="lang-option" onclick="setLang('pt')">Portugues</button>
+                    <button class="lang-option" onclick="setLang('de')">Deutsch</button>
+                </div>
+            </div>
+            <div class="hamburger" id="hamburger" onclick="toggleNav()">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- HERO -->
+    <section id="hero">
+        <div class="hero-bg"></div>
+        <div class="hero-lines"></div>
+        <div class="hero-content">
+            <div class="hero-badge">Since 2025 — Rainbow Six Siege</div>
+            <h1 class="hero-title glitch" data-text="MAFIA WARS">MAFIA <span class="red">WARS</span></h1>
+            <p class="hero-subtitle" data-i18n="hero_subtitle">Dominar es cuestion de familia</p>
+            <div class="hero-cta">
+                <a href="#roster" class="btn btn-primary" data-i18n="hero_btn_roster">Ver Roster</a>
+                <a href="#shop" class="btn btn-outline" data-i18n="hero_btn_shop">Tienda</a>
+                <a href="https://discord.com/channels/1465110883230285826/1465110884409151504" target="_blank" class="btn btn-outline" data-i18n="hero_btn_join">Unete</a>
+            </div>
+        </div>
+        <div class="scroll-indicator">
+            <span>Scroll</span>
+            <div class="scroll-line"></div>
+        </div>
+    </section>
+
+    <!-- MARQUEE -->
+    <div class="marquee-container">
+        <div class="marquee-track">
+            <span class="marquee-item">MAFIA WARS</span><span class="marquee-item">&#9733;</span>
+            <span class="marquee-item">R6 SIEGE</span><span class="marquee-item">&#9733;</span>
+            <span class="marquee-item">SINCE 2025</span><span class="marquee-item">&#9733;</span>
+            <span class="marquee-item">#GOMAFIA</span><span class="marquee-item">&#9733;</span>
+            <span class="marquee-item">MAFIA WARS</span><span class="marquee-item">&#9733;</span>
+            <span class="marquee-item">R6 SIEGE</span><span class="marquee-item">&#9733;</span>
+            <span class="marquee-item">SINCE 2025</span><span class="marquee-item">&#9733;</span>
+            <span class="marquee-item">#GOMAFIA</span><span class="marquee-item">&#9733;</span>
+        </div>
+    </div>
+
+    <!-- ROSTER -->
+    <section id="roster">
+        <div class="section-header reveal">
+            <div class="section-tag" data-i18n="roster_tag">// Line-Up Actual</div>
+            <h2 class="section-title" data-i18n="roster_title">NUESTRO ROSTER</h2>
+            <div class="section-line"></div>
+        </div>
+        <div class="roster-grid">
+            <div class="player-card reveal"><div class="player-avatar"><div class="player-bg"><span class="player-initial">SL</span></div></div><div class="player-info"><div class="player-name">Sleepy</div><div class="player-role">Player</div></div></div>
+            <div class="player-card reveal"><div class="player-avatar"><div class="player-bg"><span class="player-initial">RA</span></div></div><div class="player-info"><div class="player-name">Rashy</div><div class="player-role">Player</div></div></div>
+            <div class="player-card reveal"><div class="player-avatar"><div class="player-bg"><span class="player-initial">RV</span></div></div><div class="player-info"><div class="player-name">Raveen</div><div class="player-role">Player</div></div></div>
+            <div class="player-card reveal"><div class="player-avatar"><div class="player-bg"><span class="player-initial">KE</span></div></div><div class="player-info"><div class="player-name">Kesko</div><div class="player-role">Player</div></div></div>
+            <div class="player-card reveal"><div class="player-avatar"><div class="player-bg"><span class="player-initial">KV</span></div></div><div class="player-info"><div class="player-name">Kvrmvs</div><div class="player-role">Player</div></div></div>
+            <div class="player-card reveal"><div class="player-avatar"><div class="player-bg"><span class="player-initial">DU</span></div></div><div class="player-info"><div class="player-name">Dunda</div><div class="player-role">Player</div></div></div>
+            <div class="player-card reveal"><div class="player-avatar"><div class="player-bg"><span class="player-initial">HV</span></div></div><div class="player-info"><div class="player-name">Hvscn</div><div class="player-role">Player</div></div></div>
+            <div class="player-card reveal"><div class="player-avatar"><div class="player-bg"><span class="player-initial">JA</span></div></div><div class="player-info"><div class="player-name">Janspend</div><div class="player-role">Player</div></div></div>
+        </div>
+        <div class="staff-section reveal">
+            <div class="staff-title" data-i18n="staff_title">// Direccion</div>
+            <div class="staff-grid">
+                <div class="staff-member"><div class="staff-name">Holly</div><div class="staff-role">CEO</div></div>
+                <div class="staff-member"><div class="staff-name">Atila</div><div class="staff-role">CEO</div></div>
+                <div class="staff-member"><div class="staff-name">Ibicrack</div><div class="staff-role" data-i18n="role_investor">Inversor</div></div>
+            </div>
+        </div>
+    </section>
+
+    <div class="divider"></div>
+
+    <!-- SHOP -->
+    <section id="shop">
+        <div class="section-header reveal">
+            <div class="section-tag" data-i18n="shop_tag">// Merch Oficial</div>
+            <h2 class="section-title" data-i18n="shop_title">TIENDA</h2>
+            <div class="section-line"></div>
+        </div>
+        <div class="shop-container">
+            <div class="jersey-display reveal">
+                <div class="jersey-card">
+                    <div class="jersey-badge" data-i18n="shop_badge">NUEVA</div>
+                    <div class="jersey-visual">
+                        <img src="jersey.png" alt="Mafia Wars Official Jersey 2025 — GoMafia" loading="lazy">
+                    </div>
+                    <div class="jersey-details">
+                        <div class="jersey-name" data-i18n="jersey_name">Jersey Oficial 2025 — GoMafia</div>
+                        <div class="jersey-desc" data-i18n="jersey_desc">Camiseta oficial del equipo Mafia Wars. Diseno con llamas en rojo y blanco. Fabricada por Stardic.</div>
+                        <div class="jersey-price">39.99&euro;</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="order-section reveal" id="orderForm">
+                <h3 data-i18n="order_title">Hacer Pedido</h3>
+                <form id="jerseyForm" onsubmit="submitOrder(event)">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label data-i18n="form_name">Nombre</label>
+                            <input type="text" id="fname" required placeholder="Tu nombre">
+                        </div>
+                        <div class="form-group">
+                            <label data-i18n="form_surname">Apellido</label>
+                            <input type="text" id="lname" required placeholder="Tu apellido">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Email</label>
+                        <input type="email" id="email" required placeholder="tu@email.com">
+                    </div>
+                    <div class="form-group">
+                        <label data-i18n="form_gamertag">Gamertag (opcional)</label>
+                        <input type="text" id="gamertag" placeholder="Tu nick para personalizar">
+                    </div>
+                    <div class="form-group">
+                        <label data-i18n="form_size">Talla</label>
+                        <div class="size-options">
+                            <button type="button" class="size-btn" onclick="selectSize(this, 'XS')">XS</button>
+                            <button type="button" class="size-btn" onclick="selectSize(this, 'S')">S</button>
+                            <button type="button" class="size-btn" onclick="selectSize(this, 'M')">M</button>
+                            <button type="button" class="size-btn" onclick="selectSize(this, 'L')">L</button>
+                            <button type="button" class="size-btn" onclick="selectSize(this, 'XL')">XL</button>
+                            <button type="button" class="size-btn" onclick="selectSize(this, '2XL')">2XL</button>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label data-i18n="form_quantity">Cantidad</label>
+                        <div class="quantity-control">
+                            <button type="button" class="qty-btn" onclick="changeQty(-1)">-</button>
+                            <span class="qty-display" id="qtyDisplay">1</span>
+                            <button type="button" class="qty-btn" onclick="changeQty(1)">+</button>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label data-i18n="form_address">Direccion de envio</label>
+                        <textarea id="address" required placeholder="Calle, numero, ciudad, codigo postal, pais"></textarea>
+                    </div>
+                    <div class="order-total">
+                        <span data-i18n="form_total">TOTAL</span>
+                        <span class="total-price" id="totalPrice">39.99&euro;</span>
+                    </div>
+                    <button type="submit" class="btn-order" data-i18n="form_submit">Enviar Pedido</button>
+                </form>
+            </div>
+
+            <div class="order-success" id="orderSuccess">
+                <svg viewBox="0 0 60 60" fill="none"><circle cx="30" cy="30" r="28" stroke="#e21a1a" stroke-width="3"/><path d="M18 30 L26 38 L42 22" stroke="#e21a1a" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                <h3 data-i18n="order_success_title">Pedido Recibido!</h3>
+                <p data-i18n="order_success_text">Te contactaremos por email para confirmar el pago y el envio. #GoMafia</p>
+            </div>
+        </div>
+    </section>
+
+    <div class="divider"></div>
+
+    <!-- ABOUT -->
+    <section id="about">
+        <div class="section-header reveal">
+            <div class="section-tag" data-i18n="about_tag">// Quienes Somos</div>
+            <h2 class="section-title" data-i18n="about_title">LA FAMILIA</h2>
+            <div class="section-line"></div>
+        </div>
+        <div class="about-content">
+            <div class="about-text reveal">
+                <p data-i18n="about_p1">Mafia Wars es una organizacion de esports fundada en 2025 con una mision clara: competir al mas alto nivel en Rainbow Six Siege. Nacimos con la mentalidad de que un equipo es mas que un roster — es una familia.</p>
+                <p data-i18n="about_p2">Con jugadores dedicados, sponsors que confian en nuestra vision, y una comunidad creciente, Mafia Wars se esta posicionando como una de las organizaciones emergentes mas ambiciosas del panorama competitivo.</p>
+                <p data-i18n="about_p3"><strong style="color: var(--red);">Dominar es cuestion de familia.</strong></p>
+            </div>
+            <div class="about-stats reveal">
+                <div class="stat-card"><div class="stat-number">8</div><div class="stat-label" data-i18n="stat_players">Jugadores</div></div>
+                <div class="stat-card"><div class="stat-number">2025</div><div class="stat-label" data-i18n="stat_founded">Fundado</div></div>
+                <div class="stat-card"><div class="stat-number">R6</div><div class="stat-label">Siege</div></div>
+                <div class="stat-card"><div class="stat-number">3</div><div class="stat-label">Sponsors</div></div>
+            </div>
+        </div>
+    </section>
+
+    <div class="divider"></div>
+
+    <!-- SPONSORS -->
+    <section id="sponsors">
+        <div class="section-header reveal">
+            <div class="section-tag" data-i18n="sponsors_tag">// Nuestros Partners</div>
+            <h2 class="section-title">SPONSORS</h2>
+            <div class="section-line"></div>
+        </div>
+        <div class="sponsors-grid reveal">
+            <div class="sponsor-item"><div class="sponsor-name">GlobalPata</div></div>
+            <div class="sponsor-item"><div class="sponsor-name">ExitLag</div></div>
+            <div class="sponsor-item"><div class="sponsor-name">Dubby</div></div>
+        </div>
+    </section>
+
+    <div class="divider"></div>
+
+    <!-- CONTACT -->
+    <section id="contact">
+        <div class="section-header reveal">
+            <div class="section-tag" data-i18n="contact_tag">// Siguenos</div>
+            <h2 class="section-title" data-i18n="contact_title">UNETE A LA FAMILIA</h2>
+            <div class="section-line"></div>
+        </div>
+        <div class="social-links reveal">
+            <a href="https://x.com/Mafia_Wars_" target="_blank" class="social-link" title="Twitter / X">
+                <svg viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+            </a>
+            <a href="https://www.instagram.com/mafia.wars.official_/" target="_blank" class="social-link" title="Instagram">
+                <svg viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>
+            </a>
+            <a href="https://discord.com/channels/1465110883230285826/1465110884409151504" target="_blank" class="social-link" title="Discord">
+                <svg viewBox="0 0 24 24"><path d="M20.317 4.37a19.791 19.791 0 00-4.885-1.515.074.074 0 00-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 00-5.487 0 12.64 12.64 0 00-.617-1.25.077.077 0 00-.079-.037A19.736 19.736 0 003.677 4.37a.07.07 0 00-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 00.031.057 19.9 19.9 0 005.993 3.03.078.078 0 00.084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 00-.041-.106 13.107 13.107 0 01-1.872-.892.077.077 0 01-.008-.128 10.2 10.2 0 00.372-.292.074.074 0 01.077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 01.078.01c.12.098.246.198.373.292a.077.077 0 01-.006.127 12.299 12.299 0 01-1.873.892.077.077 0 00-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 00.084.028 19.839 19.839 0 006.002-3.03.077.077 0 00.032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 00-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/></svg>
+            </a>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer>
+        <p class="footer-text">&copy; 2025 <span>Mafia Wars</span> — All Rights Reserved</p>
+    </footer>
+
+    <script>
+        // ===== TRANSLATIONS =====
+        const translations = {
+            es: {
+                nav_home: "Inicio", nav_roster: "Roster", nav_shop: "Tienda", nav_about: "Nosotros", nav_contact: "Contacto",
+                hero_subtitle: "Dominar es cuestión de familia",
+                hero_btn_roster: "Ver Roster", hero_btn_shop: "Tienda", hero_btn_join: "Únete",
+                roster_tag: "// Line-Up Actual", roster_title: "NUESTRO ROSTER",
+                staff_title: "// Dirección", role_investor: "Inversor",
+                shop_tag: "// Merch Oficial", shop_title: "TIENDA", shop_badge: "NUEVA",
+                jersey_name: "Jersey Oficial 2025 — GoMafia",
+                jersey_desc: "Camiseta oficial del equipo Mafia Wars. Diseño con llamas en rojo y blanco. Fabricada por Stardic.",
+                order_title: "Hacer Pedido",
+                form_name: "Nombre", form_surname: "Apellido", form_gamertag: "Gamertag (opcional)",
+                form_size: "Talla", form_quantity: "Cantidad", form_address: "Dirección de envío",
+                form_total: "TOTAL", form_submit: "Enviar Pedido",
+                ph_name: "Tu nombre", ph_surname: "Tu apellido", ph_email: "tu@email.com",
+                ph_gamertag: "Tu nick para personalizar", ph_address: "Calle, número, ciudad, código postal, país",
+                order_success_title: "¡Pedido Recibido!",
+                order_success_text: "Te contactaremos por email para confirmar el pago y el envío. #GoMafia",
+                about_tag: "// Quiénes Somos", about_title: "LA FAMILIA",
+                about_p1: "Mafia Wars es una organización de esports fundada en 2025 con una misión clara: competir al más alto nivel en Rainbow Six Siege. Nacimos con la mentalidad de que un equipo es más que un roster — es una familia.",
+                about_p2: "Con jugadores dedicados, sponsors que confían en nuestra visión, y una comunidad creciente, Mafia Wars se está posicionando como una de las organizaciones emergentes más ambiciosas del panorama competitivo.",
+                about_p3: '<strong style="color: var(--red);">Dominar es cuestión de familia.</strong>',
+                stat_players: "Jugadores", stat_founded: "Fundado",
+                sponsors_tag: "// Nuestros Partners",
+                contact_tag: "// Síguenos", contact_title: "ÚNETE A LA FAMILIA"
+            },
+            en: {
+                nav_home: "Home", nav_roster: "Roster", nav_shop: "Shop", nav_about: "About", nav_contact: "Contact",
+                hero_subtitle: "Domination is a family matter",
+                hero_btn_roster: "View Roster", hero_btn_shop: "Shop", hero_btn_join: "Join Us",
+                roster_tag: "// Current Line-Up", roster_title: "OUR ROSTER",
+                staff_title: "// Leadership", role_investor: "Investor",
+                shop_tag: "// Official Merch", shop_title: "SHOP", shop_badge: "NEW",
+                jersey_name: "Official Jersey 2025 — GoMafia",
+                jersey_desc: "Official Mafia Wars team jersey. Red and white flame design. Manufactured by Stardic.",
+                order_title: "Place Order",
+                form_name: "First Name", form_surname: "Last Name", form_gamertag: "Gamertag (optional)",
+                form_size: "Size", form_quantity: "Quantity", form_address: "Shipping Address",
+                form_total: "TOTAL", form_submit: "Submit Order",
+                ph_name: "Your first name", ph_surname: "Your last name", ph_email: "your@email.com",
+                ph_gamertag: "Your nick for customization", ph_address: "Street, number, city, zip code, country",
+                order_success_title: "Order Received!",
+                order_success_text: "We'll contact you by email to confirm payment and shipping. #GoMafia",
+                about_tag: "// Who We Are", about_title: "THE FAMILY",
+                about_p1: "Mafia Wars is an esports organization founded in 2025 with a clear mission: to compete at the highest level in Rainbow Six Siege. We were born with the mindset that a team is more than a roster — it's a family.",
+                about_p2: "With dedicated players, sponsors who believe in our vision, and a growing community, Mafia Wars is positioning itself as one of the most ambitious emerging organizations in the competitive scene.",
+                about_p3: '<strong style="color: var(--red);">Domination is a family matter.</strong>',
+                stat_players: "Players", stat_founded: "Founded",
+                sponsors_tag: "// Our Partners",
+                contact_tag: "// Follow Us", contact_title: "JOIN THE FAMILY"
+            },
+            pt: {
+                nav_home: "Início", nav_roster: "Roster", nav_shop: "Loja", nav_about: "Sobre Nós", nav_contact: "Contato",
+                hero_subtitle: "Dominar é questão de família",
+                hero_btn_roster: "Ver Roster", hero_btn_shop: "Loja", hero_btn_join: "Junte-se",
+                roster_tag: "// Line-Up Atual", roster_title: "NOSSO ROSTER",
+                staff_title: "// Direção", role_investor: "Investidor",
+                shop_tag: "// Merch Oficial", shop_title: "LOJA", shop_badge: "NOVA",
+                jersey_name: "Jersey Oficial 2025 — GoMafia",
+                jersey_desc: "Camiseta oficial do time Mafia Wars. Design com chamas em vermelho e branco. Fabricada pela Stardic.",
+                order_title: "Fazer Pedido",
+                form_name: "Nome", form_surname: "Sobrenome", form_gamertag: "Gamertag (opcional)",
+                form_size: "Tamanho", form_quantity: "Quantidade", form_address: "Endereço de envio",
+                form_total: "TOTAL", form_submit: "Enviar Pedido",
+                ph_name: "Seu nome", ph_surname: "Seu sobrenome", ph_email: "seu@email.com",
+                ph_gamertag: "Seu nick para personalizar", ph_address: "Rua, número, cidade, CEP, país",
+                order_success_title: "Pedido Recebido!",
+                order_success_text: "Entraremos em contato por email para confirmar o pagamento e o envio. #GoMafia",
+                about_tag: "// Quem Somos", about_title: "A FAMÍLIA",
+                about_p1: "Mafia Wars é uma organização de esports fundada em 2025 com uma missão clara: competir no mais alto nível em Rainbow Six Siege. Nascemos com a mentalidade de que um time é mais do que um roster — é uma família.",
+                about_p2: "Com jogadores dedicados, patrocinadores que confiam na nossa visão e uma comunidade crescente, Mafia Wars está se posicionando como uma das organizações emergentes mais ambiciosas do cenário competitivo.",
+                about_p3: '<strong style="color: var(--red);">Dominar é questão de família.</strong>',
+                stat_players: "Jogadores", stat_founded: "Fundado",
+                sponsors_tag: "// Nossos Parceiros",
+                contact_tag: "// Siga-nos", contact_title: "JUNTE-SE À FAMÍLIA"
+            },
+            de: {
+                nav_home: "Start", nav_roster: "Roster", nav_shop: "Shop", nav_about: "Über Uns", nav_contact: "Kontakt",
+                hero_subtitle: "Herrschaft ist Familiensache",
+                hero_btn_roster: "Roster Ansehen", hero_btn_shop: "Shop", hero_btn_join: "Beitreten",
+                roster_tag: "// Aktuelles Line-Up", roster_title: "UNSER ROSTER",
+                staff_title: "// Führung", role_investor: "Investor",
+                shop_tag: "// Offizieller Merch", shop_title: "SHOP", shop_badge: "NEU",
+                jersey_name: "Offizielles Trikot 2025 — GoMafia",
+                jersey_desc: "Offizielles Mafia Wars Teamtrikot. Flammendesign in Rot und Weiß. Hergestellt von Stardic.",
+                order_title: "Bestellen",
+                form_name: "Vorname", form_surname: "Nachname", form_gamertag: "Gamertag (optional)",
+                form_size: "Größe", form_quantity: "Menge", form_address: "Lieferadresse",
+                form_total: "GESAMT", form_submit: "Bestellung Absenden",
+                ph_name: "Dein Vorname", ph_surname: "Dein Nachname", ph_email: "deine@email.com",
+                ph_gamertag: "Dein Nick zur Personalisierung", ph_address: "Straße, Nummer, Stadt, PLZ, Land",
+                order_success_title: "Bestellung Eingegangen!",
+                order_success_text: "Wir kontaktieren dich per E-Mail zur Bestätigung der Zahlung und des Versands. #GoMafia",
+                about_tag: "// Wer Wir Sind", about_title: "DIE FAMILIE",
+                about_p1: "Mafia Wars ist eine Esports-Organisation, die 2025 mit einer klaren Mission gegründet wurde: auf höchstem Niveau in Rainbow Six Siege zu konkurrieren. Wir wurden mit der Mentalität geboren, dass ein Team mehr ist als ein Roster — es ist eine Familie.",
+                about_p2: "Mit engagierten Spielern, Sponsoren, die an unsere Vision glauben, und einer wachsenden Community positioniert sich Mafia Wars als eine der ambitioniertesten aufstrebenden Organisationen in der kompetitiven Szene.",
+                about_p3: '<strong style="color: var(--red);">Herrschaft ist Familiensache.</strong>',
+                stat_players: "Spieler", stat_founded: "Gegründet",
+                sponsors_tag: "// Unsere Partner",
+                contact_tag: "// Folge Uns", contact_title: "WERDE TEIL DER FAMILIE"
+            }
+        };
+
+        let currentLang = 'es';
+
+        function setLang(lang) {
+            currentLang = lang;
+            const t = translations[lang];
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (t[key]) {
+                    if (key.startsWith('about_p')) {
+                        el.innerHTML = t[key];
+                    } else {
+                        el.textContent = t[key];
+                    }
+                }
+            });
+            // Update placeholders
+            const phMap = { fname: 'ph_name', lname: 'ph_surname', email: 'ph_email', gamertag: 'ph_gamertag', address: 'ph_address' };
+            Object.entries(phMap).forEach(([id, key]) => {
+                const el = document.getElementById(id);
+                if (el && t[key]) el.placeholder = t[key];
+            });
+            // Update lang button
+            document.getElementById('currentLang').textContent = lang.toUpperCase();
+            // Update active state
+            document.querySelectorAll('.lang-option').forEach(btn => {
+                btn.classList.toggle('active', btn.textContent.toLowerCase().includes(
+                    lang === 'es' ? 'espanol' : lang === 'en' ? 'english' : lang === 'pt' ? 'portugues' : 'deutsch'
+                ));
+            });
+            toggleLang();
+        }
+
+        function toggleLang() {
+            document.getElementById('langSwitcher').classList.toggle('open');
+        }
+        // Close dropdown when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('.lang-switcher')) {
+                document.getElementById('langSwitcher').classList.remove('open');
+            }
+        });
+
+        // ===== SHOP LOGIC =====
+        let selectedSize = '';
+        let quantity = 1;
+        const PRICE = 39.99;
+
+        function selectSize(btn, size) {
+            document.querySelectorAll('.size-btn').forEach(b => b.classList.remove('selected'));
+            btn.classList.add('selected');
+            selectedSize = size;
+        }
+
+        function changeQty(delta) {
+            quantity = Math.max(1, Math.min(10, quantity + delta));
+            document.getElementById('qtyDisplay').textContent = quantity;
+            document.getElementById('totalPrice').textContent = (PRICE * quantity).toFixed(2) + '€';
+        }
+
+        function submitOrder(e) {
+            e.preventDefault();
+            if (!selectedSize) {
+                const t = translations[currentLang];
+                const sizeLabel = t.form_size || 'Talla';
+                alert(currentLang === 'es' ? 'Por favor selecciona una talla' :
+                      currentLang === 'en' ? 'Please select a size' :
+                      currentLang === 'pt' ? 'Por favor selecione um tamanho' :
+                      'Bitte wähle eine Größe');
+                return;
+            }
+            // Collect data
+            const data = {
+                name: document.getElementById('fname').value,
+                surname: document.getElementById('lname').value,
+                email: document.getElementById('email').value,
+                gamertag: document.getElementById('gamertag').value,
+                size: selectedSize,
+                quantity: quantity,
+                total: (PRICE * quantity).toFixed(2),
+                address: document.getElementById('address').value
+            };
+            console.log('Order submitted:', data);
+            // Show success
+            document.getElementById('orderForm').style.display = 'none';
+            document.getElementById('orderSuccess').classList.add('show');
+            // Send mailto
+            const subject = encodeURIComponent('Pedido Jersey Mafia Wars - ' + data.name);
+            const body = encodeURIComponent(
+                'Nombre: ' + data.name + ' ' + data.surname + '\n' +
+                'Email: ' + data.email + '\n' +
+                'Gamertag: ' + (data.gamertag || 'N/A') + '\n' +
+                'Talla: ' + data.size + '\n' +
+                'Cantidad: ' + data.quantity + '\n' +
+                'Total: ' + data.total + '€\n' +
+                'Direccion: ' + data.address
+            );
+            window.open('mailto:valorgonzalezalex@gmail.com?subject=' + subject + '&body=' + body, '_blank');
+        }
+
+        // ===== GENERAL =====
+        window.addEventListener('load', () => {
+            setTimeout(() => document.getElementById('loader').classList.add('hidden'), 1800);
+        });
+        window.addEventListener('scroll', () => {
+            document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 50);
+        });
+        function toggleNav() {
+            document.getElementById('navLinks').classList.toggle('open');
+            document.getElementById('hamburger').classList.toggle('active');
+        }
+        function closeNav() {
+            document.getElementById('navLinks').classList.remove('open');
+            document.getElementById('hamburger').classList.remove('active');
+        }
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach((entry, i) => {
+                if (entry.isIntersecting) {
+                    setTimeout(() => entry.target.classList.add('visible'), i * 100);
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.1 });
+        document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            });
+        });
+    </script>
+</body>
+</html>
