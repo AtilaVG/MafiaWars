@@ -168,6 +168,16 @@
         .badge-captain { background: var(--red); color: var(--white); }
         .badge-subcaptain { background: rgba(226,26,26,0.6); color: var(--white); }
         .badge-streamer { background: rgba(145,70,255,0.8); color: var(--white); }
+        .badge-ceo { background: linear-gradient(135deg, #d4a017, #f0c040); color: #1a1a1a; font-weight: 700; }
+        .badge-investor { background: linear-gradient(135deg, #1a8a5a, #2ed88a); color: #1a1a1a; font-weight: 700; }
+
+        /* Staff card gold theme */
+        .staff-card .player-bg { background: linear-gradient(180deg, rgba(212,160,23,0.05) 0%, rgba(212,160,23,0.12) 100%); }
+        .staff-card:hover { border-color: rgba(212,160,23,0.5); box-shadow: 0 25px 50px rgba(212,160,23,0.1), 0 0 0 1px rgba(212,160,23,0.1); }
+        .staff-card .player-initial { color: rgba(212,160,23,0.25); }
+        .staff-card:hover .player-initial { color: rgba(212,160,23,0.5); text-shadow: 0 0 40px rgba(212,160,23,0.3); }
+        .staff-card .player-glow { background: radial-gradient(ellipse at bottom, rgba(212,160,23,0.15) 0%, transparent 70%); }
+        .staff-card .player-info::before { background: linear-gradient(90deg, transparent, rgba(212,160,23,0.6), transparent); }
 
         /* Streamer section */
         .streamers-section { margin-top: 60px; text-align: center; }
@@ -577,12 +587,28 @@
                 </div>
             </div>
         </div>
-        <div class="staff-section reveal">
-            <div class="staff-title" data-i18n="staff_title">// Direccion</div>
-            <div class="staff-grid">
-                <div class="staff-member"><div class="staff-name">Holly</div><div class="staff-role">CEO</div></div>
-                <div class="staff-member"><div class="staff-name">Atila</div><div class="staff-role">CEO</div></div>
-                <div class="staff-member"><div class="staff-name">Ibicrack</div><div class="staff-role" data-i18n="role_investor">Inversor</div></div>
+        <!-- DIRECCIÓN -->
+        <div class="streamers-section reveal">
+            <div class="staff-title" data-i18n="staff_title">// Dirección</div>
+            <div class="streamers-grid">
+                <!-- Holly - CEO -->
+                <div class="player-card staff-card reveal">
+                    <div class="player-role-badge badge-ceo">CEO</div>
+                    <div class="player-avatar"><div class="player-bg"><div class="player-glow"></div><span class="player-initial">HO</span></div></div>
+                    <div class="player-info"><div class="player-name">Holly</div><div class="player-role">CEO</div></div>
+                </div>
+                <!-- Atila - CEO -->
+                <div class="player-card staff-card reveal">
+                    <div class="player-role-badge badge-ceo">CEO</div>
+                    <div class="player-avatar"><div class="player-bg"><div class="player-glow"></div><span class="player-initial">AT</span></div></div>
+                    <div class="player-info"><div class="player-name">Atila</div><div class="player-role">CEO</div></div>
+                </div>
+                <!-- Ibicrack - Inversor -->
+                <div class="player-card staff-card reveal">
+                    <div class="player-role-badge badge-investor" data-i18n="role_investor">Inversor</div>
+                    <div class="player-avatar"><div class="player-bg"><div class="player-glow"></div><span class="player-initial">IB</span></div></div>
+                    <div class="player-info"><div class="player-name">Ibicrack</div><div class="player-role" data-i18n="role_investor">Inversor</div></div>
+                </div>
             </div>
         </div>
     </section>
