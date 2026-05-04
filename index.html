@@ -262,6 +262,52 @@
         .reveal-scale { opacity: 0; transform: scale(0.9); transition: all 1s cubic-bezier(0.16, 1, 0.3, 1); }
         .reveal-scale.visible { opacity: 1; transform: scale(1); }
 
+        /* ===== ADMIN PANEL ===== */
+        .admin-trigger { position: fixed; bottom: 30px; left: 30px; width: 40px; height: 40px; background: var(--dark2); border: 1px solid rgba(226,26,26,0.1); color: var(--gray); cursor: pointer; z-index: 900; display: flex; align-items: center; justify-content: center; clip-path: polygon(0 0, calc(100% - 6px) 0, 100% 6px, 100% 100%, 6px 100%, 0 calc(100% - 6px)); transition: all 0.3s; font-size: 0.7rem; }
+        .admin-trigger:hover { border-color: var(--red); color: var(--red); }
+        .admin-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.85); backdrop-filter: blur(10px); z-index: 9999; display: none; align-items: center; justify-content: center; }
+        .admin-overlay.show { display: flex; }
+        .admin-login { background: var(--dark2); border: 1px solid rgba(226,26,26,0.2); padding: 40px; max-width: 400px; width: 90%; clip-path: polygon(0 0, calc(100% - 16px) 0, 100% 16px, 100% 100%, 16px 100%, 0 calc(100% - 16px)); }
+        .admin-login h2 { font-family: 'Bebas Neue', sans-serif; font-size: 2rem; letter-spacing: 4px; color: var(--red); margin-bottom: 8px; }
+        .admin-login p { font-size: 0.8rem; color: var(--gray); margin-bottom: 24px; }
+        .admin-login input { width: 100%; padding: 12px 16px; background: var(--dark3); border: 1px solid rgba(226,26,26,0.1); color: var(--white); font-family: 'Inter', sans-serif; font-size: 0.9rem; outline: none; margin-bottom: 16px; transition: border-color 0.3s; }
+        .admin-login input:focus { border-color: var(--red); }
+        .admin-login .admin-error { color: #ef4444; font-size: 0.75rem; margin-bottom: 12px; display: none; }
+        .admin-login .admin-btns { display: flex; gap: 10px; }
+        .admin-login .admin-btns button { flex: 1; padding: 12px; font-family: 'Oswald', sans-serif; font-size: 0.85rem; letter-spacing: 2px; text-transform: uppercase; cursor: pointer; border: none; transition: all 0.3s; }
+        .btn-admin-enter { background: var(--red); color: var(--white); }
+        .btn-admin-enter:hover { background: var(--crimson); }
+        .btn-admin-cancel { background: var(--dark3); color: var(--gray); border: 1px solid rgba(255,255,255,0.1) !important; }
+        .btn-admin-cancel:hover { color: var(--white); }
+
+        .admin-panel { background: var(--dark2); border: 1px solid rgba(226,26,26,0.2); padding: 40px; max-width: 700px; width: 95%; max-height: 85vh; overflow-y: auto; clip-path: polygon(0 0, calc(100% - 16px) 0, 100% 16px, 100% 100%, 16px 100%, 0 calc(100% - 16px)); display: none; }
+        .admin-panel.show { display: block; }
+        .admin-panel h2 { font-family: 'Bebas Neue', sans-serif; font-size: 2rem; letter-spacing: 4px; color: var(--red); margin-bottom: 6px; }
+        .admin-panel .admin-sub { font-size: 0.75rem; color: var(--gray); margin-bottom: 24px; }
+        .admin-panel h3 { font-family: 'Oswald', sans-serif; font-size: 1rem; letter-spacing: 2px; text-transform: uppercase; color: var(--white); margin: 20px 0 14px; padding-top: 16px; border-top: 1px solid rgba(226,26,26,0.1); }
+        .admin-form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px; }
+        .admin-form-row.three { grid-template-columns: 1fr 1fr 1fr; }
+        .admin-form-row label { display: block; font-family: 'Oswald', sans-serif; font-size: 0.65rem; letter-spacing: 2px; text-transform: uppercase; color: var(--gray); margin-bottom: 6px; }
+        .admin-form-row input, .admin-form-row select { width: 100%; padding: 10px 12px; background: var(--dark3); border: 1px solid rgba(226,26,26,0.1); color: var(--white); font-family: 'Inter', sans-serif; font-size: 0.85rem; outline: none; transition: border-color 0.3s; }
+        .admin-form-row input:focus, .admin-form-row select:focus { border-color: var(--red); }
+        .admin-form-row select option { background: var(--dark3); }
+        .btn-add-match { width: 100%; padding: 12px; background: var(--red); color: var(--white); border: none; font-family: 'Oswald', sans-serif; font-size: 0.85rem; letter-spacing: 2px; text-transform: uppercase; cursor: pointer; margin-top: 12px; transition: all 0.3s; }
+        .btn-add-match:hover { background: var(--crimson); }
+        .admin-match-list { margin-top: 16px; }
+        .admin-match-item { display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; background: var(--dark3); border: 1px solid rgba(226,26,26,0.05); margin-bottom: 8px; font-size: 0.82rem; }
+        .admin-match-item .ami-info { display: flex; align-items: center; gap: 12px; }
+        .admin-match-item .ami-status { font-family: 'Oswald', sans-serif; font-size: 0.6rem; letter-spacing: 2px; padding: 3px 8px; text-transform: uppercase; }
+        .ami-status.win { background: rgba(34,197,94,0.15); color: #22c55e; }
+        .ami-status.loss { background: rgba(239,68,68,0.15); color: #ef4444; }
+        .ami-status.upcoming { background: rgba(226,26,26,0.1); color: var(--red); }
+        .admin-match-item .ami-text { font-family: 'Oswald', sans-serif; letter-spacing: 1px; }
+        .btn-delete-match { background: none; border: 1px solid rgba(239,68,68,0.3); color: #ef4444; padding: 6px 12px; font-family: 'Oswald', sans-serif; font-size: 0.65rem; letter-spacing: 1px; text-transform: uppercase; cursor: pointer; transition: all 0.3s; }
+        .btn-delete-match:hover { background: rgba(239,68,68,0.15); }
+        .btn-admin-close { width: 100%; padding: 12px; background: var(--dark3); color: var(--gray); border: 1px solid rgba(255,255,255,0.1); font-family: 'Oswald', sans-serif; font-size: 0.85rem; letter-spacing: 2px; text-transform: uppercase; cursor: pointer; margin-top: 20px; transition: all 0.3s; }
+        .btn-admin-close:hover { color: var(--white); border-color: rgba(255,255,255,0.3); }
+        .firebase-notice { background: rgba(226,26,26,0.08); border: 1px solid rgba(226,26,26,0.15); padding: 14px 18px; margin-bottom: 20px; font-size: 0.78rem; color: var(--light-gray); line-height: 1.6; }
+        .firebase-notice code { background: var(--dark3); padding: 2px 6px; font-size: 0.72rem; color: var(--red); }
+
         /* ===== NOISE ===== */
         body::after { content: ''; position: fixed; inset: 0; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E"); pointer-events: none; z-index: 9998; opacity: 0.5; }
 
@@ -381,23 +427,9 @@
             <h2 class="section-title" data-i18n="matches_title">PARTIDOS</h2>
             <div class="section-line"></div>
         </div>
-        <div class="matches-container">
-            <div class="match-card reveal">
-                <div class="match-left"><span class="match-status upcoming" data-i18n="match_upcoming">PROXIMO</span><div class="match-teams">MAFIA WARS <span class="vs">VS</span> <span class="opponent">TBD</span></div></div>
-                <div class="match-right"><div class="match-date">TBD</div><div class="match-map" data-i18n="match_tbd">Por confirmar</div></div>
-            </div>
-            <div class="match-card reveal">
-                <div class="match-left"><span class="match-status win">WIN</span><div class="match-teams">MAFIA WARS <span class="vs">VS</span> <span class="opponent">RIVAL TEAM</span></div></div>
-                <div class="match-right"><div class="match-score"><span class="our">7</span><span class="sep">-</span>4</div><div class="match-map">Clubhouse</div></div>
-            </div>
-            <div class="match-card reveal">
-                <div class="match-left"><span class="match-status win">WIN</span><div class="match-teams">MAFIA WARS <span class="vs">VS</span> <span class="opponent">ENEMY ORG</span></div></div>
-                <div class="match-right"><div class="match-score"><span class="our">7</span><span class="sep">-</span>3</div><div class="match-map">Oregon</div></div>
-            </div>
-            <div class="match-card reveal">
-                <div class="match-left"><span class="match-status loss">LOSS</span><div class="match-teams">MAFIA WARS <span class="vs">VS</span> <span class="opponent">TOP SQUAD</span></div></div>
-                <div class="match-right"><div class="match-score">4<span class="sep">-</span><span class="our">7</span></div><div class="match-map">Kafe</div></div>
-            </div>
+        <div class="matches-container" id="matchesContainer">
+            <!-- Loaded dynamically from Firebase or fallback data -->
+            <div style="text-align:center;padding:40px;color:var(--gray);font-family:'Oswald',sans-serif;font-size:0.8rem;letter-spacing:2px;" id="matchesLoading">CARGANDO PARTIDOS...</div>
         </div>
     </section>
     <div class="divider"></div>
@@ -512,6 +544,56 @@
         </div>
     </section>
 
+    <!-- Admin Trigger Button -->
+    <button class="admin-trigger" id="adminTrigger" onclick="showAdminLogin()" title="Admin">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 10.99h7c-.53 4.12-3.28 7.79-7 8.94V12H5V6.3l7-3.11v8.8z"/></svg>
+    </button>
+
+    <!-- Admin Login Overlay -->
+    <div class="admin-overlay" id="adminOverlay">
+        <div class="admin-login" id="adminLoginBox">
+            <h2>ADMIN PANEL</h2>
+            <p>Introduce la contraseña de administrador</p>
+            <input type="password" id="adminPassword" placeholder="Contraseña" onkeypress="if(event.key==='Enter')attemptLogin()">
+            <div class="admin-error" id="adminError">Contraseña incorrecta</div>
+            <div class="admin-btns">
+                <button class="btn-admin-enter" onclick="attemptLogin()">Entrar</button>
+                <button class="btn-admin-cancel" onclick="hideAdmin()">Cancelar</button>
+            </div>
+        </div>
+        <div class="admin-panel" id="adminPanel">
+            <h2>PANEL DE ADMIN</h2>
+            <p class="admin-sub">Gestiona los partidos de Mafia Wars. Los cambios se guardan en Firebase y son visibles para todos.</p>
+
+            <div class="firebase-notice" id="firebaseNotice">
+                <strong>Firebase no configurado.</strong> Para que los partidos se guarden online, necesitas crear un proyecto en Firebase y pegar tu configuración. Mientras tanto, los partidos se muestran con datos de ejemplo.
+            </div>
+
+            <h3>Añadir Partido</h3>
+            <div class="admin-form-row">
+                <div><label>Oponente</label><input type="text" id="aOpponent" placeholder="Nombre del equipo rival"></div>
+                <div><label>Resultado</label><select id="aStatus"><option value="win">Victoria (WIN)</option><option value="loss">Derrota (LOSS)</option><option value="upcoming">Próximo</option></select></div>
+            </div>
+            <div class="admin-form-row three">
+                <div><label>Nuestro Score</label><input type="number" id="aOurScore" placeholder="7" min="0" max="99"></div>
+                <div><label>Score Rival</label><input type="number" id="aTheirScore" placeholder="4" min="0" max="99"></div>
+                <div><label>Mapa</label><input type="text" id="aMap" placeholder="Clubhouse"></div>
+            </div>
+            <div class="admin-form-row">
+                <div><label>Fecha</label><input type="date" id="aDate"></div>
+                <div><label>Competición (opcional)</label><input type="text" id="aComp" placeholder="Liga, Torneo..."></div>
+            </div>
+            <button class="btn-add-match" onclick="addMatch()">+ Añadir Partido</button>
+
+            <h3>Partidos Actuales</h3>
+            <div class="admin-match-list" id="adminMatchList">
+                <!-- Filled by JS -->
+            </div>
+
+            <button class="btn-admin-close" onclick="hideAdmin()">Cerrar Panel</button>
+        </div>
+    </div>
+
     <!-- Back to top -->
     <button class="back-to-top" id="backToTop" onclick="window.scrollTo({top:0,behavior:'smooth'})"><svg viewBox="0 0 24 24"><path d="M12 4l-8 8h5v8h6v-8h5z"/></svg></button>
 
@@ -528,7 +610,191 @@
         </div>
     </footer>
 
+<!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+
 <script>
+// ===== FIREBASE CONFIG =====
+// INSTRUCCIONES: Reemplaza este objeto con tu config de Firebase
+// 1. Ve a https://console.firebase.google.com
+// 2. Crea un proyecto nuevo (nombre: MafiaWars o lo que quieras)
+// 3. En el proyecto, ve a "Realtime Database" y crea una base de datos (en modo test)
+// 4. Ve a Configuración del proyecto > General > Tu app web > Registrar app
+// 5. Copia el firebaseConfig y pégalo aquí abajo
+const firebaseConfig = {
+    apiKey: "AIzaSyC_xF4wjs3WPaf-Mev4yzDvAJnDjkxiMns",
+    authDomain: "mafiawars-e27aa.firebaseapp.com",
+    databaseURL: "https://mafiawars-e27aa-default-rtdb.europe-west1.firebasedatabase.app",
+    projectId: "mafiawars-e27aa",
+    storageBucket: "mafiawars-e27aa.firebasestorage.app",
+    messagingSenderId: "495627561372",
+    appId: "1:495627561372:web:5c29efcd5f5b1cd31f4059",
+    measurementId: "G-46L7641B5L"
+};
+
+let db = null;
+let firebaseReady = false;
+try {
+    if (firebaseConfig.apiKey !== "TU_API_KEY") {
+        firebase.initializeApp(firebaseConfig);
+        db = firebase.database();
+        firebaseReady = true;
+    }
+} catch(e) { console.warn('Firebase not configured:', e); }
+
+// ===== MATCHES DATA =====
+const FALLBACK_MATCHES = [
+    { id: 'f1', opponent: 'TBD', status: 'upcoming', ourScore: 0, theirScore: 0, map: '', date: 'TBD', comp: '' },
+    { id: 'f2', opponent: 'RIVAL TEAM', status: 'win', ourScore: 7, theirScore: 4, map: 'Clubhouse', date: '2026-04-28', comp: '' },
+    { id: 'f3', opponent: 'ENEMY ORG', status: 'win', ourScore: 7, theirScore: 3, map: 'Oregon', date: '2026-04-20', comp: '' },
+    { id: 'f4', opponent: 'TOP SQUAD', status: 'loss', ourScore: 4, theirScore: 7, map: 'Kafe', date: '2026-04-15', comp: '' }
+];
+
+let matches = [];
+let isAdmin = false;
+const ADMIN_HASH = 'a3f5b8c2d1e9'; // Not real security, just UI gate
+
+// Hash function for password
+function simpleHash(str) {
+    let h = 0;
+    for (let i = 0; i < str.length; i++) { h = ((h << 5) - h) + str.charCodeAt(i); h |= 0; }
+    return Math.abs(h).toString(16).slice(0, 12);
+}
+const CORRECT_HASH = simpleHash('Atila_holly2025');
+
+// ===== RENDER MATCHES =====
+function renderMatches(list) {
+    const container = document.getElementById('matchesContainer');
+    if (!list || list.length === 0) {
+        container.innerHTML = '<div style="text-align:center;padding:40px;color:var(--gray);font-family:Oswald,sans-serif;font-size:0.8rem;letter-spacing:2px;">NO HAY PARTIDOS REGISTRADOS</div>';
+        return;
+    }
+    container.innerHTML = list.map(m => {
+        const isUpcoming = m.status === 'upcoming';
+        const statusLabel = m.status === 'win' ? 'WIN' : m.status === 'loss' ? 'LOSS' : (T[currentLangCode]?.match_upcoming || 'PRÓXIMO');
+        const dateStr = m.date === 'TBD' || !m.date ? 'TBD' : new Date(m.date).toLocaleDateString();
+        let scoreHtml = '';
+        if (!isUpcoming) {
+            if (m.status === 'win') {
+                scoreHtml = `<span class="our">${m.ourScore}</span><span class="sep">-</span>${m.theirScore}`;
+            } else {
+                scoreHtml = `${m.ourScore}<span class="sep">-</span><span class="our">${m.theirScore}</span>`;
+            }
+        }
+        return `<div class="match-card reveal visible">
+            <div class="match-left"><span class="match-status ${m.status}">${statusLabel}</span><div class="match-teams">MAFIA WARS <span class="vs">VS</span> <span class="opponent">${m.opponent.toUpperCase()}</span></div></div>
+            <div class="match-right">${isUpcoming ? `<div class="match-date">${dateStr}</div><div class="match-map">${T[currentLangCode]?.match_tbd||'Por confirmar'}</div>` : `<div class="match-score">${scoreHtml}</div><div class="match-map">${m.map||''}${m.comp?' — '+m.comp:''}</div><div class="match-date">${dateStr}</div>`}</div>
+        </div>`;
+    }).join('');
+}
+
+// Render admin match list
+function renderAdminMatches() {
+    const list = document.getElementById('adminMatchList');
+    if (!matches.length) { list.innerHTML = '<p style="color:var(--gray);font-size:0.8rem;">No hay partidos.</p>'; return; }
+    list.innerHTML = matches.map(m => `<div class="admin-match-item">
+        <div class="ami-info"><span class="ami-status ${m.status}">${m.status.toUpperCase()}</span><span class="ami-text">MW vs ${m.opponent} ${m.status!=='upcoming'?m.ourScore+'-'+m.theirScore:''} ${m.map?'('+m.map+')':''}</span></div>
+        <button class="btn-delete-match" onclick="deleteMatch('${m.id}')">Eliminar</button>
+    </div>`).join('');
+}
+
+// ===== LOAD MATCHES =====
+function loadMatches() {
+    if (firebaseReady) {
+        document.getElementById('firebaseNotice').style.display = 'none';
+        db.ref('matches').on('value', snap => {
+            const data = snap.val();
+            matches = data ? Object.keys(data).map(k => ({ id: k, ...data[k] })) : [];
+            matches.sort((a, b) => {
+                if (a.status === 'upcoming' && b.status !== 'upcoming') return -1;
+                if (b.status === 'upcoming' && a.status !== 'upcoming') return 1;
+                return (b.date || '').localeCompare(a.date || '');
+            });
+            renderMatches(matches);
+            if (isAdmin) renderAdminMatches();
+        });
+    } else {
+        matches = [...FALLBACK_MATCHES];
+        renderMatches(matches);
+    }
+}
+
+// ===== ADD MATCH =====
+function addMatch() {
+    const opponent = document.getElementById('aOpponent').value.trim();
+    const status = document.getElementById('aStatus').value;
+    const ourScore = parseInt(document.getElementById('aOurScore').value) || 0;
+    const theirScore = parseInt(document.getElementById('aTheirScore').value) || 0;
+    const map = document.getElementById('aMap').value.trim();
+    const date = document.getElementById('aDate').value || 'TBD';
+    const comp = document.getElementById('aComp').value.trim();
+
+    if (!opponent) { alert('Escribe el nombre del oponente'); return; }
+
+    const matchData = { opponent, status, ourScore, theirScore, map, date, comp };
+
+    if (firebaseReady) {
+        db.ref('matches').push(matchData);
+    } else {
+        matchData.id = 'local_' + Date.now();
+        matches.unshift(matchData);
+        renderMatches(matches);
+        renderAdminMatches();
+    }
+
+    // Clear form
+    document.getElementById('aOpponent').value = '';
+    document.getElementById('aOurScore').value = '';
+    document.getElementById('aTheirScore').value = '';
+    document.getElementById('aMap').value = '';
+    document.getElementById('aDate').value = '';
+    document.getElementById('aComp').value = '';
+}
+
+// ===== DELETE MATCH =====
+function deleteMatch(id) {
+    if (!confirm('¿Eliminar este partido?')) return;
+    if (firebaseReady) {
+        db.ref('matches/' + id).remove();
+    } else {
+        matches = matches.filter(m => m.id !== id);
+        renderMatches(matches);
+        renderAdminMatches();
+    }
+}
+
+// ===== ADMIN AUTH =====
+function showAdminLogin() {
+    document.getElementById('adminOverlay').classList.add('show');
+    document.getElementById('adminLoginBox').style.display = 'block';
+    document.getElementById('adminPanel').classList.remove('show');
+    document.getElementById('adminPassword').value = '';
+    document.getElementById('adminError').style.display = 'none';
+    setTimeout(() => document.getElementById('adminPassword').focus(), 100);
+}
+
+function attemptLogin() {
+    const pwd = document.getElementById('adminPassword').value;
+    if (simpleHash(pwd) === CORRECT_HASH) {
+        isAdmin = true;
+        document.getElementById('adminLoginBox').style.display = 'none';
+        document.getElementById('adminPanel').classList.add('show');
+        renderAdminMatches();
+    } else {
+        document.getElementById('adminError').style.display = 'block';
+        document.getElementById('adminPassword').value = '';
+    }
+}
+
+function hideAdmin() {
+    document.getElementById('adminOverlay').classList.remove('show');
+    isAdmin = false;
+}
+
+// Close admin on ESC
+document.addEventListener('keydown', e => { if (e.key === 'Escape') hideAdmin(); });
+
 // ===== TRANSLATIONS =====
 const T = {
     es: { nav_home:"Inicio",nav_roster:"Roster",nav_matches:"Partidos",nav_shop:"Tienda",nav_timeline:"Historia",nav_about:"Nosotros",nav_contact:"Contacto",hero_subtitle:"Dominar es cuestión de familia",hero_btn_roster:"Ver Roster",hero_btn_shop:"Tienda",hero_btn_join:"Únete",roster_tag:"// Line-Up Actual",roster_title:"NUESTRO ROSTER",staff_title:"// Dirección",role_investor:"Inversor",matches_tag:"// Resultados",matches_title:"PARTIDOS",match_upcoming:"PRÓXIMO",match_tbd:"Por confirmar",shop_tag:"// Merch Oficial",shop_title:"TIENDA",shop_badge:"NUEVA",jersey_name:"Jersey Oficial 2025 — GoMafia",jersey_desc:"Camiseta oficial del equipo Mafia Wars. Diseño con llamas en rojo y blanco. Fabricada por Stardic.",order_title:"Hacer Pedido",form_name:"Nombre",form_surname:"Apellido",form_gamertag:"Gamertag (opcional)",form_size:"Talla",form_quantity:"Cantidad",form_address:"Dirección de envío",form_total:"TOTAL",form_submit:"Enviar Pedido",ph_name:"Tu nombre",ph_surname:"Tu apellido",ph_email:"tu@email.com",ph_gamertag:"Tu nick para personalizar",ph_address:"Calle, número, ciudad, código postal, país",order_success_title:"¡Pedido Recibido!",order_success_text:"Te contactaremos por email para confirmar el pago y el envío. #GoMafia",timeline_tag:"// Nuestra Historia",timeline_title:"TIMELINE",tl_1_title:"Fundación de Mafia Wars",tl_1_desc:"Nace la organización con la visión de competir al más alto nivel en Rainbow Six Siege.",tl_2_title:"Primer Roster Oficial",tl_2_desc:"Se forma la primera lineup competitiva y comienzan los entrenamientos intensivos.",tl_3_title:"Primeros Sponsors",tl_3_desc:"GlobalPata, ExitLag y Dubby se unen como partners oficiales de la organización.",tl_4_title:"Jersey Oficial y Merch",tl_4_desc:"Lanzamiento de la primera jersey oficial fabricada por Stardic con el diseño GoMafia.",tl_5_title:"Nuevo Roster — Era Actual",tl_5_desc:"Sleepy, Rashy, Raveen, Kesko, Kvrmvs, Dunda, Hvscn y Janspend forman la lineup actual.",about_tag:"// Quiénes Somos",about_title:"LA FAMILIA",about_p1:"Mafia Wars es una organización de esports fundada en 2025 con una misión clara: competir al más alto nivel en Rainbow Six Siege. Nacimos con la mentalidad de que un equipo es más que un roster — es una familia.",about_p2:"Con jugadores dedicados, sponsors que confían en nuestra visión, y una comunidad creciente, Mafia Wars se está posicionando como una de las organizaciones emergentes más ambiciosas del panorama competitivo.",about_p3:'<strong style="color:var(--red)">Dominar es cuestión de familia.</strong>',stat_players:"Jugadores",stat_founded:"Fundado",sponsors_tag:"// Nuestros Partners",contact_tag:"// Síguenos",contact_title:"ÚNETE A LA FAMILIA"},
@@ -569,6 +835,9 @@ function animateParticles(){ ctx.clearRect(0,0,canvas.width,canvas.height); part
     requestAnimationFrame(animateParticles);
 }
 animateParticles();
+
+// ===== LOAD MATCHES ON START =====
+loadMatches();
 
 // ===== CUSTOM CURSOR =====
 const cursorMain=document.getElementById('cursorMain'), cursorRing=document.getElementById('cursorRing');
