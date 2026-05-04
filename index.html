@@ -113,7 +113,7 @@
 
         /* ===== ROSTER ===== */
         #roster { background: var(--dark); }
-        .roster-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; max-width: 1100px; margin: 0 auto; }
+        .roster-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 18px; max-width: 1200px; margin: 0 auto; }
         .player-card { background: var(--dark2); border: 1px solid rgba(226,26,26,0.08); position: relative; overflow: hidden; cursor: pointer; transition: all 0.5s cubic-bezier(0.16,1,0.3,1); clip-path: polygon(0 0, calc(100% - 16px) 0, 100% 16px, 100% 100%, 16px 100%, 0 calc(100% - 16px)); }
         .player-card::before { content: ''; position: absolute; inset: 0; background: linear-gradient(180deg, transparent 50%, rgba(226,26,26,0.08) 100%); opacity: 0; transition: opacity 0.5s; z-index: 1; }
         .player-card:hover { border-color: rgba(226,26,26,0.4); transform: translateY(-8px) scale(1.02); box-shadow: 0 25px 50px rgba(226,26,26,0.12), 0 0 0 1px rgba(226,26,26,0.1); }
@@ -137,6 +137,50 @@
         .staff-member:hover { border-color: rgba(226,26,26,0.3); }
         .staff-name { font-family: 'Oswald', sans-serif; font-size: 1.1rem; letter-spacing: 2px; text-transform: uppercase; }
         .staff-role { font-size: 0.68rem; letter-spacing: 2px; text-transform: uppercase; color: var(--red); margin-top: 4px; }
+
+        /* ===== SOCIAL POPUP ===== */
+        .player-card { position: relative; }
+        .social-popup {
+            position: absolute; bottom: 0; left: 0; right: 0; background: rgba(10,10,10,0.95);
+            backdrop-filter: blur(12px); padding: 14px; display: flex; justify-content: center;
+            gap: 12px; z-index: 10; opacity: 0; transform: translateY(10px);
+            transition: all 0.35s cubic-bezier(0.16,1,0.3,1); pointer-events: none;
+            border-top: 2px solid var(--red);
+        }
+        .player-card:hover .social-popup, .player-card.popup-open .social-popup {
+            opacity: 1; transform: translateY(0); pointer-events: all;
+        }
+        .social-popup a {
+            width: 36px; height: 36px; border: 1px solid rgba(226,26,26,0.25);
+            display: flex; align-items: center; justify-content: center; transition: all 0.3s;
+            clip-path: polygon(0 0, calc(100% - 5px) 0, 100% 5px, 100% 100%, 5px 100%, 0 calc(100% - 5px));
+        }
+        .social-popup a:hover { background: var(--red); border-color: var(--red); transform: scale(1.15); }
+        .social-popup a svg { width: 16px; height: 16px; fill: var(--white); }
+        .social-popup a.disabled { opacity: 0.25; pointer-events: none; }
+
+        /* Player role badges */
+        .player-role-badge {
+            position: absolute; top: 10px; left: 10px; font-family: 'Oswald', sans-serif;
+            font-size: 0.55rem; letter-spacing: 2px; text-transform: uppercase; padding: 3px 10px;
+            z-index: 3; clip-path: polygon(0 0, calc(100% - 4px) 0, 100% 4px, 100% 100%, 4px 100%, 0 calc(100% - 4px));
+        }
+        .badge-captain { background: var(--red); color: var(--white); }
+        .badge-subcaptain { background: rgba(226,26,26,0.6); color: var(--white); }
+        .badge-streamer { background: rgba(145,70,255,0.8); color: var(--white); }
+
+        /* Streamer section */
+        .streamers-section { margin-top: 60px; text-align: center; }
+        .streamers-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; max-width: 800px; margin: 0 auto; }
+        @media (max-width: 600px) { .streamers-grid { grid-template-columns: 1fr 1fr; } }
+        .streamer-card .player-bg { background: linear-gradient(180deg, rgba(145,70,255,0.05) 0%, rgba(145,70,255,0.12) 100%); }
+        .streamer-card:hover { border-color: rgba(145,70,255,0.5); box-shadow: 0 25px 50px rgba(145,70,255,0.1), 0 0 0 1px rgba(145,70,255,0.1); }
+        .streamer-card .player-initial { color: rgba(145,70,255,0.25); }
+        .streamer-card:hover .player-initial { color: rgba(145,70,255,0.5); text-shadow: 0 0 40px rgba(145,70,255,0.3); }
+        .streamer-card .player-glow { background: radial-gradient(ellipse at bottom, rgba(145,70,255,0.15) 0%, transparent 70%); }
+        .streamer-card .player-info::before { background: linear-gradient(90deg, transparent, rgba(145,70,255,0.6), transparent); }
+        .streamer-card .social-popup { border-top: 2px solid rgba(145,70,255,0.8); }
+        .streamer-card .social-popup a:hover { background: rgba(145,70,255,0.8); border-color: rgba(145,70,255,0.8); }
 
         /* ===== MATCHES ===== */
         #matches { background: var(--black); }
@@ -314,7 +358,7 @@
         /* ===== RESPONSIVE ===== */
         @media (max-width: 1024px) { section { padding: 100px 30px; } nav { padding: 0 24px; } }
         @media (max-width: 900px) {
-            .roster-grid { grid-template-columns: repeat(2, 1fr); }
+            .roster-grid { grid-template-columns: repeat(3, 1fr); }
             .about-content, .shop-container { grid-template-columns: 1fr; gap: 40px; }
         }
         @media (max-width: 768px) {
@@ -324,7 +368,7 @@
             .form-row { grid-template-columns: 1fr; }
             section { padding: 80px 20px; }
         }
-        @media (max-width: 600px) { .roster-grid { grid-template-columns: 1fr 1fr; gap: 10px; } .player-initial { font-size: 3rem; } .match-card { flex-direction: column; gap: 12px; text-align: center; } .match-right { text-align: center; } }
+        @media (max-width: 600px) { .roster-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; } .player-initial { font-size: 3rem; } .match-card { flex-direction: column; gap: 12px; text-align: center; } .match-right { text-align: center; } }
     </style>
 </head>
 <body>
@@ -400,14 +444,138 @@
             <div class="section-line"></div>
         </div>
         <div class="roster-grid">
-            <div class="player-card reveal"><div class="player-number">01</div><div class="player-avatar"><div class="player-bg"><div class="player-glow"></div><span class="player-initial">SL</span></div></div><div class="player-info"><div class="player-name">Sleepy</div><div class="player-role">Player</div></div></div>
-            <div class="player-card reveal"><div class="player-number">02</div><div class="player-avatar"><div class="player-bg"><div class="player-glow"></div><span class="player-initial">RA</span></div></div><div class="player-info"><div class="player-name">Rashy</div><div class="player-role">Player</div></div></div>
-            <div class="player-card reveal"><div class="player-number">03</div><div class="player-avatar"><div class="player-bg"><div class="player-glow"></div><span class="player-initial">RV</span></div></div><div class="player-info"><div class="player-name">Raveen</div><div class="player-role">Player</div></div></div>
-            <div class="player-card reveal"><div class="player-number">04</div><div class="player-avatar"><div class="player-bg"><div class="player-glow"></div><span class="player-initial">KE</span></div></div><div class="player-info"><div class="player-name">Kesko</div><div class="player-role">Player</div></div></div>
-            <div class="player-card reveal"><div class="player-number">05</div><div class="player-avatar"><div class="player-bg"><div class="player-glow"></div><span class="player-initial">KV</span></div></div><div class="player-info"><div class="player-name">Kvrmvs</div><div class="player-role">Player</div></div></div>
-            <div class="player-card reveal"><div class="player-number">06</div><div class="player-avatar"><div class="player-bg"><div class="player-glow"></div><span class="player-initial">DU</span></div></div><div class="player-info"><div class="player-name">Dunda</div><div class="player-role">Player</div></div></div>
-            <div class="player-card reveal"><div class="player-number">07</div><div class="player-avatar"><div class="player-bg"><div class="player-glow"></div><span class="player-initial">HV</span></div></div><div class="player-info"><div class="player-name">Hvscn</div><div class="player-role">Player</div></div></div>
-            <div class="player-card reveal"><div class="player-number">08</div><div class="player-avatar"><div class="player-bg"><div class="player-glow"></div><span class="player-initial">JA</span></div></div><div class="player-info"><div class="player-name">Janspend</div><div class="player-role">Player</div></div></div>
+            <!-- Sleepy - Captain -->
+            <div class="player-card reveal" onclick="this.classList.toggle('popup-open')">
+                <div class="player-role-badge badge-captain" data-i18n="role_captain">Capitán</div>
+                <div class="player-number">01</div>
+                <div class="player-avatar"><div class="player-bg"><div class="player-glow"></div><span class="player-initial">SL</span></div></div>
+                <div class="player-info"><div class="player-name">Sleepy</div><div class="player-role" data-i18n="role_captain">Capitán</div></div>
+                <div class="social-popup">
+                    <a href="https://x.com/xSleepy19" target="_blank" title="Twitter"><svg viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg></a>
+                </div>
+            </div>
+            <!-- Rashyy - Sub-Captain -->
+            <div class="player-card reveal" onclick="this.classList.toggle('popup-open')">
+                <div class="player-role-badge badge-subcaptain" data-i18n="role_subcaptain">Sub-Capitán</div>
+                <div class="player-number">02</div>
+                <div class="player-avatar"><div class="player-bg"><div class="player-glow"></div><span class="player-initial">RA</span></div></div>
+                <div class="player-info"><div class="player-name">Rashyy</div><div class="player-role" data-i18n="role_subcaptain">Sub-Capitán</div></div>
+                <div class="social-popup">
+                    <a href="https://x.com/Rashyy26" target="_blank" title="Twitter"><svg viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg></a>
+                </div>
+            </div>
+            <!-- Raveen -->
+            <div class="player-card reveal" onclick="this.classList.toggle('popup-open')">
+                <div class="player-number">03</div>
+                <div class="player-avatar"><div class="player-bg"><div class="player-glow"></div><span class="player-initial">RV</span></div></div>
+                <div class="player-info"><div class="player-name">Raveen</div><div class="player-role">Player</div></div>
+                <div class="social-popup">
+                    <a href="https://x.com/eRaaven" target="_blank" title="Twitter"><svg viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg></a>
+                </div>
+            </div>
+            <!-- Kesko -->
+            <div class="player-card reveal" onclick="this.classList.toggle('popup-open')">
+                <div class="player-number">04</div>
+                <div class="player-avatar"><div class="player-bg"><div class="player-glow"></div><span class="player-initial">KE</span></div></div>
+                <div class="player-info"><div class="player-name">Kesko</div><div class="player-role">Player</div></div>
+                <div class="social-popup">
+                    <a href="https://x.com/k3sko_" target="_blank" title="Twitter"><svg viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg></a>
+                </div>
+            </div>
+            <!-- Kvrmvs -->
+            <div class="player-card reveal" onclick="this.classList.toggle('popup-open')">
+                <div class="player-number">05</div>
+                <div class="player-avatar"><div class="player-bg"><div class="player-glow"></div><span class="player-initial">KV</span></div></div>
+                <div class="player-info"><div class="player-name">Kvrmvs</div><div class="player-role">Player</div></div>
+                <div class="social-popup">
+                    <a href="https://x.com/xKvrmas" target="_blank" title="Twitter"><svg viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg></a>
+                </div>
+            </div>
+            <!-- Dunda -->
+            <div class="player-card reveal" onclick="this.classList.toggle('popup-open')">
+                <div class="player-number">06</div>
+                <div class="player-avatar"><div class="player-bg"><div class="player-glow"></div><span class="player-initial">DU</span></div></div>
+                <div class="player-info"><div class="player-name">Dunda</div><div class="player-role">Player</div></div>
+                <div class="social-popup">
+                    <a href="https://x.com/Dundahhh" target="_blank" title="Twitter"><svg viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg></a>
+                </div>
+            </div>
+            <!-- Meeysa -->
+            <div class="player-card reveal" onclick="this.classList.toggle('popup-open')">
+                <div class="player-number">07</div>
+                <div class="player-avatar"><div class="player-bg"><div class="player-glow"></div><span class="player-initial">ME</span></div></div>
+                <div class="player-info"><div class="player-name">Meeysa</div><div class="player-role">Player</div></div>
+                <div class="social-popup">
+                    <a href="https://x.com/meeysano" target="_blank" title="Twitter"><svg viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg></a>
+                </div>
+            </div>
+            <!-- Janspend -->
+            <div class="player-card reveal" onclick="this.classList.toggle('popup-open')">
+                <div class="player-number">08</div>
+                <div class="player-avatar"><div class="player-bg"><div class="player-glow"></div><span class="player-initial">JA</span></div></div>
+                <div class="player-info"><div class="player-name">Janspend</div><div class="player-role">Player</div></div>
+                <div class="social-popup">
+                    <a href="https://x.com/Janspend" target="_blank" title="Twitter"><svg viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg></a>
+                </div>
+            </div>
+            <!-- Shanks -->
+            <div class="player-card reveal" onclick="this.classList.toggle('popup-open')">
+                <div class="player-number">09</div>
+                <div class="player-avatar"><div class="player-bg"><div class="player-glow"></div><span class="player-initial">SH</span></div></div>
+                <div class="player-info"><div class="player-name">Shanks</div><div class="player-role">Player</div></div>
+                <div class="social-popup">
+                    <a href="https://x.com/Shxnksyuh" target="_blank" title="Twitter"><svg viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg></a>
+                </div>
+            </div>
+            <!-- Scxpz -->
+            <div class="player-card reveal" onclick="this.classList.toggle('popup-open')">
+                <div class="player-number">10</div>
+                <div class="player-avatar"><div class="player-bg"><div class="player-glow"></div><span class="player-initial">SC</span></div></div>
+                <div class="player-info"><div class="player-name">Scxpz</div><div class="player-role">Player</div></div>
+                <div class="social-popup">
+                    <a href="https://x.com/Scpzinho" target="_blank" title="Twitter"><svg viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg></a>
+                </div>
+            </div>
+        </div>
+
+        <!-- STREAMERS -->
+        <div class="streamers-section reveal">
+            <div class="staff-title" data-i18n="streamers_title">// Streamers Asociados</div>
+            <div class="streamers-grid">
+                <!-- JHMOFFICIAL -->
+                <div class="player-card streamer-card reveal" onclick="this.classList.toggle('popup-open')">
+                    <div class="player-role-badge badge-streamer">Streamer</div>
+                    <div class="player-avatar"><div class="player-bg"><div class="player-glow"></div><span class="player-initial">JH</span></div></div>
+                    <div class="player-info"><div class="player-name">JHMOFFICIAL</div><div class="player-role">Streamer</div></div>
+                    <div class="social-popup">
+                        <a href="#" class="disabled" title="Twitter — Próximamente"><svg viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg></a>
+                        <a href="#" class="disabled" title="Instagram — Próximamente"><svg viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg></a>
+                        <a href="#" class="disabled" title="Twitch — Próximamente"><svg viewBox="0 0 24 24"><path d="M11.571 4.714h1.715v5.143H11.57zm4.715 0H18v5.143h-1.714zM6 0L1.714 4.286v15.428h5.143V24l4.286-4.286h3.428L22.286 12V0zm14.571 11.143l-3.428 3.428h-3.429l-3 3v-3H6.857V1.714h13.714z"/></svg></a>
+                    </div>
+                </div>
+                <!-- GM09X -->
+                <div class="player-card streamer-card reveal" onclick="this.classList.toggle('popup-open')">
+                    <div class="player-role-badge badge-streamer">Streamer</div>
+                    <div class="player-avatar"><div class="player-bg"><div class="player-glow"></div><span class="player-initial">GM</span></div></div>
+                    <div class="player-info"><div class="player-name">GM09X</div><div class="player-role">Streamer</div></div>
+                    <div class="social-popup">
+                        <a href="#" class="disabled" title="Twitter — Próximamente"><svg viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg></a>
+                        <a href="#" class="disabled" title="Instagram — Próximamente"><svg viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg></a>
+                        <a href="#" class="disabled" title="Twitch — Próximamente"><svg viewBox="0 0 24 24"><path d="M11.571 4.714h1.715v5.143H11.57zm4.715 0H18v5.143h-1.714zM6 0L1.714 4.286v15.428h5.143V24l4.286-4.286h3.428L22.286 12V0zm14.571 11.143l-3.428 3.428h-3.429l-3 3v-3H6.857V1.714h13.714z"/></svg></a>
+                    </div>
+                </div>
+                <!-- TRIPLE -->
+                <div class="player-card streamer-card reveal" onclick="this.classList.toggle('popup-open')">
+                    <div class="player-role-badge badge-streamer">Streamer</div>
+                    <div class="player-avatar"><div class="player-bg"><div class="player-glow"></div><span class="player-initial">TR</span></div></div>
+                    <div class="player-info"><div class="player-name">TRIPLE</div><div class="player-role">Streamer</div></div>
+                    <div class="social-popup">
+                        <a href="#" class="disabled" title="Twitter — Próximamente"><svg viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg></a>
+                        <a href="#" class="disabled" title="Instagram — Próximamente"><svg viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg></a>
+                        <a href="#" class="disabled" title="Twitch — Próximamente"><svg viewBox="0 0 24 24"><path d="M11.571 4.714h1.715v5.143H11.57zm4.715 0H18v5.143h-1.714zM6 0L1.714 4.286v15.428h5.143V24l4.286-4.286h3.428L22.286 12V0zm14.571 11.143l-3.428 3.428h-3.429l-3 3v-3H6.857V1.714h13.714z"/></svg></a>
+                    </div>
+                </div>
+            </div>
         </div>
         <div class="staff-section reveal">
             <div class="staff-title" data-i18n="staff_title">// Direccion</div>
@@ -487,7 +655,7 @@
             <div class="timeline-item reveal"><div class="timeline-dot"></div><div class="timeline-date">2025</div><div class="timeline-title" data-i18n="tl_2_title">Primer Roster Oficial</div><div class="timeline-desc" data-i18n="tl_2_desc">Se forma la primera lineup competitiva y comienzan los entrenamientos intensivos.</div></div>
             <div class="timeline-item reveal"><div class="timeline-dot"></div><div class="timeline-date">2025</div><div class="timeline-title" data-i18n="tl_3_title">Primeros Sponsors</div><div class="timeline-desc" data-i18n="tl_3_desc">GlobalPata, ExitLag y Dubby se unen como partners oficiales de la organizacion.</div></div>
             <div class="timeline-item reveal"><div class="timeline-dot"></div><div class="timeline-date">2026</div><div class="timeline-title" data-i18n="tl_4_title">Jersey Oficial y Merch</div><div class="timeline-desc" data-i18n="tl_4_desc">Lanzamiento de la primera jersey oficial fabricada por Stardic con el diseno GoMafia.</div></div>
-            <div class="timeline-item reveal"><div class="timeline-dot"></div><div class="timeline-date">2026</div><div class="timeline-title" data-i18n="tl_5_title">Nuevo Roster — Era Actual</div><div class="timeline-desc" data-i18n="tl_5_desc">Sleepy, Rashy, Raveen, Kesko, Kvrmvs, Dunda, Hvscn y Janspend forman la lineup actual.</div></div>
+            <div class="timeline-item reveal"><div class="timeline-dot"></div><div class="timeline-date">2026</div><div class="timeline-title" data-i18n="tl_5_title">Nuevo Roster — Era Actual</div><div class="timeline-desc" data-i18n="tl_5_desc">Sleepy, Rashyy, Raveen, Kesko, Kvrmvs, Dunda, Meeysa, Janspend, Shanks y Scxpz forman la lineup actual de 10 jugadores.</div></div>
         </div>
     </section>
     <div class="divider"></div>
@@ -506,7 +674,7 @@
                 <p data-i18n="about_p3"><strong style="color: var(--red);">Dominar es cuestion de familia.</strong></p>
             </div>
             <div class="about-stats reveal-right">
-                <div class="stat-card"><div class="stat-number counter" data-target="8">0</div><div class="stat-label" data-i18n="stat_players">Jugadores</div></div>
+                <div class="stat-card"><div class="stat-number counter" data-target="10">0</div><div class="stat-label" data-i18n="stat_players">Jugadores</div></div>
                 <div class="stat-card"><div class="stat-number counter" data-target="2025">0</div><div class="stat-label" data-i18n="stat_founded">Fundado</div></div>
                 <div class="stat-card"><div class="stat-number">R6</div><div class="stat-label">Siege</div></div>
                 <div class="stat-card"><div class="stat-number counter" data-target="3">0</div><div class="stat-label">Sponsors</div></div>
@@ -523,7 +691,7 @@
             <div class="section-line"></div>
         </div>
         <div class="sponsors-grid reveal">
-            <div class="sponsor-item"><div class="sponsor-name">GlobalData</div></div>
+            <div class="sponsor-item"><div class="sponsor-name">GlobalPata</div></div>
             <div class="sponsor-item"><div class="sponsor-name">ExitLag</div></div>
             <div class="sponsor-item"><div class="sponsor-name">Dubby</div></div>
         </div>
@@ -797,10 +965,10 @@ document.addEventListener('keydown', e => { if (e.key === 'Escape') hideAdmin();
 
 // ===== TRANSLATIONS =====
 const T = {
-    es: { nav_home:"Inicio",nav_roster:"Roster",nav_matches:"Partidos",nav_shop:"Tienda",nav_timeline:"Historia",nav_about:"Nosotros",nav_contact:"Contacto",hero_subtitle:"Dominar es cuestión de familia",hero_btn_roster:"Ver Roster",hero_btn_shop:"Tienda",hero_btn_join:"Únete",roster_tag:"// Line-Up Actual",roster_title:"NUESTRO ROSTER",staff_title:"// Dirección",role_investor:"Inversor",matches_tag:"// Resultados",matches_title:"PARTIDOS",match_upcoming:"PRÓXIMO",match_tbd:"Por confirmar",shop_tag:"// Merch Oficial",shop_title:"TIENDA",shop_badge:"NUEVA",jersey_name:"Jersey Oficial 2025 — GoMafia",jersey_desc:"Camiseta oficial del equipo Mafia Wars. Diseño con llamas en rojo y blanco. Fabricada por Stardic.",order_title:"Hacer Pedido",form_name:"Nombre",form_surname:"Apellido",form_gamertag:"Gamertag (opcional)",form_size:"Talla",form_quantity:"Cantidad",form_address:"Dirección de envío",form_total:"TOTAL",form_submit:"Enviar Pedido",ph_name:"Tu nombre",ph_surname:"Tu apellido",ph_email:"tu@email.com",ph_gamertag:"Tu nick para personalizar",ph_address:"Calle, número, ciudad, código postal, país",order_success_title:"¡Pedido Recibido!",order_success_text:"Te contactaremos por email para confirmar el pago y el envío. #GoMafia",timeline_tag:"// Nuestra Historia",timeline_title:"TIMELINE",tl_1_title:"Fundación de Mafia Wars",tl_1_desc:"Nace la organización con la visión de competir al más alto nivel en Rainbow Six Siege.",tl_2_title:"Primer Roster Oficial",tl_2_desc:"Se forma la primera lineup competitiva y comienzan los entrenamientos intensivos.",tl_3_title:"Primeros Sponsors",tl_3_desc:"GlobalPata, ExitLag y Dubby se unen como partners oficiales de la organización.",tl_4_title:"Jersey Oficial y Merch",tl_4_desc:"Lanzamiento de la primera jersey oficial fabricada por Stardic con el diseño GoMafia.",tl_5_title:"Nuevo Roster — Era Actual",tl_5_desc:"Sleepy, Rashy, Raveen, Kesko, Kvrmvs, Dunda, Hvscn y Janspend forman la lineup actual.",about_tag:"// Quiénes Somos",about_title:"LA FAMILIA",about_p1:"Mafia Wars es una organización de esports fundada en 2025 con una misión clara: competir al más alto nivel en Rainbow Six Siege. Nacimos con la mentalidad de que un equipo es más que un roster — es una familia.",about_p2:"Con jugadores dedicados, sponsors que confían en nuestra visión, y una comunidad creciente, Mafia Wars se está posicionando como una de las organizaciones emergentes más ambiciosas del panorama competitivo.",about_p3:'<strong style="color:var(--red)">Dominar es cuestión de familia.</strong>',stat_players:"Jugadores",stat_founded:"Fundado",sponsors_tag:"// Nuestros Partners",contact_tag:"// Síguenos",contact_title:"ÚNETE A LA FAMILIA"},
-    en: { nav_home:"Home",nav_roster:"Roster",nav_matches:"Matches",nav_shop:"Shop",nav_timeline:"History",nav_about:"About",nav_contact:"Contact",hero_subtitle:"Domination is a family matter",hero_btn_roster:"View Roster",hero_btn_shop:"Shop",hero_btn_join:"Join Us",roster_tag:"// Current Line-Up",roster_title:"OUR ROSTER",staff_title:"// Leadership",role_investor:"Investor",matches_tag:"// Results",matches_title:"MATCHES",match_upcoming:"UPCOMING",match_tbd:"To be confirmed",shop_tag:"// Official Merch",shop_title:"SHOP",shop_badge:"NEW",jersey_name:"Official Jersey 2025 — GoMafia",jersey_desc:"Official Mafia Wars team jersey. Red and white flame design. Manufactured by Stardic.",order_title:"Place Order",form_name:"First Name",form_surname:"Last Name",form_gamertag:"Gamertag (optional)",form_size:"Size",form_quantity:"Quantity",form_address:"Shipping Address",form_total:"TOTAL",form_submit:"Submit Order",ph_name:"Your first name",ph_surname:"Your last name",ph_email:"your@email.com",ph_gamertag:"Your nick for customization",ph_address:"Street, number, city, zip, country",order_success_title:"Order Received!",order_success_text:"We'll contact you by email to confirm payment and shipping. #GoMafia",timeline_tag:"// Our History",timeline_title:"TIMELINE",tl_1_title:"Mafia Wars Founded",tl_1_desc:"The organization is born with the vision of competing at the highest level in Rainbow Six Siege.",tl_2_title:"First Official Roster",tl_2_desc:"The first competitive lineup is formed and intensive training begins.",tl_3_title:"First Sponsors",tl_3_desc:"GlobalPata, ExitLag and Dubby join as official partners of the organization.",tl_4_title:"Official Jersey & Merch",tl_4_desc:"Launch of the first official jersey manufactured by Stardic with the GoMafia design.",tl_5_title:"New Roster — Current Era",tl_5_desc:"Sleepy, Rashy, Raveen, Kesko, Kvrmvs, Dunda, Hvscn and Janspend form the current lineup.",about_tag:"// Who We Are",about_title:"THE FAMILY",about_p1:"Mafia Wars is an esports organization founded in 2025 with a clear mission: to compete at the highest level in Rainbow Six Siege. We were born with the mindset that a team is more than a roster — it's a family.",about_p2:"With dedicated players, sponsors who believe in our vision, and a growing community, Mafia Wars is positioning itself as one of the most ambitious emerging organizations in the competitive scene.",about_p3:'<strong style="color:var(--red)">Domination is a family matter.</strong>',stat_players:"Players",stat_founded:"Founded",sponsors_tag:"// Our Partners",contact_tag:"// Follow Us",contact_title:"JOIN THE FAMILY"},
-    pt: { nav_home:"Início",nav_roster:"Roster",nav_matches:"Partidas",nav_shop:"Loja",nav_timeline:"História",nav_about:"Sobre Nós",nav_contact:"Contato",hero_subtitle:"Dominar é questão de família",hero_btn_roster:"Ver Roster",hero_btn_shop:"Loja",hero_btn_join:"Junte-se",roster_tag:"// Line-Up Atual",roster_title:"NOSSO ROSTER",staff_title:"// Direção",role_investor:"Investidor",matches_tag:"// Resultados",matches_title:"PARTIDAS",match_upcoming:"PRÓXIMA",match_tbd:"A confirmar",shop_tag:"// Merch Oficial",shop_title:"LOJA",shop_badge:"NOVA",jersey_name:"Jersey Oficial 2025 — GoMafia",jersey_desc:"Camiseta oficial do time Mafia Wars. Design com chamas em vermelho e branco. Fabricada pela Stardic.",order_title:"Fazer Pedido",form_name:"Nome",form_surname:"Sobrenome",form_gamertag:"Gamertag (opcional)",form_size:"Tamanho",form_quantity:"Quantidade",form_address:"Endereço de envio",form_total:"TOTAL",form_submit:"Enviar Pedido",ph_name:"Seu nome",ph_surname:"Seu sobrenome",ph_email:"seu@email.com",ph_gamertag:"Seu nick para personalizar",ph_address:"Rua, número, cidade, CEP, país",order_success_title:"Pedido Recebido!",order_success_text:"Entraremos em contato por email para confirmar o pagamento e o envio. #GoMafia",timeline_tag:"// Nossa História",timeline_title:"TIMELINE",tl_1_title:"Fundação da Mafia Wars",tl_1_desc:"Nasce a organização com a visão de competir no mais alto nível em Rainbow Six Siege.",tl_2_title:"Primeiro Roster Oficial",tl_2_desc:"A primeira lineup competitiva é formada e os treinos intensivos começam.",tl_3_title:"Primeiros Patrocinadores",tl_3_desc:"GlobalPata, ExitLag e Dubby se juntam como parceiros oficiais da organização.",tl_4_title:"Jersey Oficial e Merch",tl_4_desc:"Lançamento da primeira jersey oficial fabricada pela Stardic com o design GoMafia.",tl_5_title:"Novo Roster — Era Atual",tl_5_desc:"Sleepy, Rashy, Raveen, Kesko, Kvrmvs, Dunda, Hvscn e Janspend formam a lineup atual.",about_tag:"// Quem Somos",about_title:"A FAMÍLIA",about_p1:"Mafia Wars é uma organização de esports fundada em 2025 com uma missão clara: competir no mais alto nível em Rainbow Six Siege. Nascemos com a mentalidade de que um time é mais do que um roster — é uma família.",about_p2:"Com jogadores dedicados, patrocinadores que confiam na nossa visão e uma comunidade crescente, Mafia Wars está se posicionando como uma das organizações emergentes mais ambiciosas do cenário competitivo.",about_p3:'<strong style="color:var(--red)">Dominar é questão de família.</strong>',stat_players:"Jogadores",stat_founded:"Fundado",sponsors_tag:"// Nossos Parceiros",contact_tag:"// Siga-nos",contact_title:"JUNTE-SE À FAMÍLIA"},
-    de: { nav_home:"Start",nav_roster:"Roster",nav_matches:"Spiele",nav_shop:"Shop",nav_timeline:"Geschichte",nav_about:"Über Uns",nav_contact:"Kontakt",hero_subtitle:"Herrschaft ist Familiensache",hero_btn_roster:"Roster Ansehen",hero_btn_shop:"Shop",hero_btn_join:"Beitreten",roster_tag:"// Aktuelles Line-Up",roster_title:"UNSER ROSTER",staff_title:"// Führung",role_investor:"Investor",matches_tag:"// Ergebnisse",matches_title:"SPIELE",match_upcoming:"NÄCHSTES",match_tbd:"Wird bestätigt",shop_tag:"// Offizieller Merch",shop_title:"SHOP",shop_badge:"NEU",jersey_name:"Offizielles Trikot 2025 — GoMafia",jersey_desc:"Offizielles Mafia Wars Teamtrikot. Flammendesign in Rot und Weiß. Hergestellt von Stardic.",order_title:"Bestellen",form_name:"Vorname",form_surname:"Nachname",form_gamertag:"Gamertag (optional)",form_size:"Größe",form_quantity:"Menge",form_address:"Lieferadresse",form_total:"GESAMT",form_submit:"Bestellung Absenden",ph_name:"Dein Vorname",ph_surname:"Dein Nachname",ph_email:"deine@email.com",ph_gamertag:"Dein Nick",ph_address:"Straße, Nummer, Stadt, PLZ, Land",order_success_title:"Bestellung Eingegangen!",order_success_text:"Wir kontaktieren dich per E-Mail zur Bestätigung. #GoMafia",timeline_tag:"// Unsere Geschichte",timeline_title:"TIMELINE",tl_1_title:"Gründung von Mafia Wars",tl_1_desc:"Die Organisation wird mit der Vision gegründet, auf höchstem Niveau in Rainbow Six Siege zu konkurrieren.",tl_2_title:"Erstes Offizielles Roster",tl_2_desc:"Das erste kompetitive Lineup wird geformt und intensives Training beginnt.",tl_3_title:"Erste Sponsoren",tl_3_desc:"GlobalPata, ExitLag und Dubby werden offizielle Partner der Organisation.",tl_4_title:"Offizielles Trikot & Merch",tl_4_desc:"Launch des ersten offiziellen Trikots von Stardic mit dem GoMafia-Design.",tl_5_title:"Neues Roster — Aktuelle Ära",tl_5_desc:"Sleepy, Rashy, Raveen, Kesko, Kvrmvs, Dunda, Hvscn und Janspend bilden das aktuelle Lineup.",about_tag:"// Wer Wir Sind",about_title:"DIE FAMILIE",about_p1:"Mafia Wars ist eine Esports-Organisation, die 2025 gegründet wurde. Wir wurden mit der Mentalität geboren, dass ein Team mehr ist als ein Roster — es ist eine Familie.",about_p2:"Mit engagierten Spielern, Sponsoren die an unsere Vision glauben, und einer wachsenden Community positioniert sich Mafia Wars als eine der ambitioniertesten Organisationen.",about_p3:'<strong style="color:var(--red)">Herrschaft ist Familiensache.</strong>',stat_players:"Spieler",stat_founded:"Gegründet",sponsors_tag:"// Unsere Partner",contact_tag:"// Folge Uns",contact_title:"WERDE TEIL DER FAMILIE"}
+    es: { nav_home:"Inicio",nav_roster:"Roster",nav_matches:"Partidos",nav_shop:"Tienda",nav_timeline:"Historia",nav_about:"Nosotros",nav_contact:"Contacto",hero_subtitle:"Dominar es cuestión de familia",hero_btn_roster:"Ver Roster",hero_btn_shop:"Tienda",hero_btn_join:"Únete",roster_tag:"// Line-Up Actual",roster_title:"NUESTRO ROSTER",staff_title:"// Dirección",role_investor:"Inversor",matches_tag:"// Resultados",matches_title:"PARTIDOS",match_upcoming:"PRÓXIMO",match_tbd:"Por confirmar",shop_tag:"// Merch Oficial",shop_title:"TIENDA",shop_badge:"NUEVA",jersey_name:"Jersey Oficial 2025 — GoMafia",jersey_desc:"Camiseta oficial del equipo Mafia Wars. Diseño con llamas en rojo y blanco. Fabricada por Stardic.",order_title:"Hacer Pedido",form_name:"Nombre",form_surname:"Apellido",form_gamertag:"Gamertag (opcional)",form_size:"Talla",form_quantity:"Cantidad",form_address:"Dirección de envío",form_total:"TOTAL",form_submit:"Enviar Pedido",ph_name:"Tu nombre",ph_surname:"Tu apellido",ph_email:"tu@email.com",ph_gamertag:"Tu nick para personalizar",ph_address:"Calle, número, ciudad, código postal, país",order_success_title:"¡Pedido Recibido!",order_success_text:"Te contactaremos por email para confirmar el pago y el envío. #GoMafia",timeline_tag:"// Nuestra Historia",timeline_title:"TIMELINE",tl_1_title:"Fundación de Mafia Wars",tl_1_desc:"Nace la organización con la visión de competir al más alto nivel en Rainbow Six Siege.",tl_2_title:"Primer Roster Oficial",tl_2_desc:"Se forma la primera lineup competitiva y comienzan los entrenamientos intensivos.",tl_3_title:"Primeros Sponsors",tl_3_desc:"GlobalPata, ExitLag y Dubby se unen como partners oficiales de la organización.",tl_4_title:"Jersey Oficial y Merch",tl_4_desc:"Lanzamiento de la primera jersey oficial fabricada por Stardic con el diseño GoMafia.",tl_5_title:"Nuevo Roster — Era Actual",tl_5_desc:"Sleepy, Rashyy, Raveen, Kesko, Kvrmvs, Dunda, Meeysa, Janspend, Shanks y Scxpz forman la lineup actual de 10 jugadores.",about_tag:"// Quiénes Somos",about_title:"LA FAMILIA",about_p1:"Mafia Wars es una organización de esports fundada en 2025 con una misión clara: competir al más alto nivel en Rainbow Six Siege. Nacimos con la mentalidad de que un equipo es más que un roster — es una familia.",about_p2:"Con jugadores dedicados, sponsors que confían en nuestra visión, y una comunidad creciente, Mafia Wars se está posicionando como una de las organizaciones emergentes más ambiciosas del panorama competitivo.",about_p3:'<strong style="color:var(--red)">Dominar es cuestión de familia.</strong>',stat_players:"Jugadores",stat_founded:"Fundado",sponsors_tag:"// Nuestros Partners",role_captain:"Capitán",role_subcaptain:"Sub-Capitán",streamers_title:"// Streamers Asociados",contact_tag:"// Síguenos",contact_title:"ÚNETE A LA FAMILIA"},
+    en: { nav_home:"Home",nav_roster:"Roster",nav_matches:"Matches",nav_shop:"Shop",nav_timeline:"History",nav_about:"About",nav_contact:"Contact",hero_subtitle:"Domination is a family matter",hero_btn_roster:"View Roster",hero_btn_shop:"Shop",hero_btn_join:"Join Us",roster_tag:"// Current Line-Up",roster_title:"OUR ROSTER",staff_title:"// Leadership",role_investor:"Investor",matches_tag:"// Results",matches_title:"MATCHES",match_upcoming:"UPCOMING",match_tbd:"To be confirmed",shop_tag:"// Official Merch",shop_title:"SHOP",shop_badge:"NEW",jersey_name:"Official Jersey 2025 — GoMafia",jersey_desc:"Official Mafia Wars team jersey. Red and white flame design. Manufactured by Stardic.",order_title:"Place Order",form_name:"First Name",form_surname:"Last Name",form_gamertag:"Gamertag (optional)",form_size:"Size",form_quantity:"Quantity",form_address:"Shipping Address",form_total:"TOTAL",form_submit:"Submit Order",ph_name:"Your first name",ph_surname:"Your last name",ph_email:"your@email.com",ph_gamertag:"Your nick for customization",ph_address:"Street, number, city, zip, country",order_success_title:"Order Received!",order_success_text:"We'll contact you by email to confirm payment and shipping. #GoMafia",timeline_tag:"// Our History",timeline_title:"TIMELINE",tl_1_title:"Mafia Wars Founded",tl_1_desc:"The organization is born with the vision of competing at the highest level in Rainbow Six Siege.",tl_2_title:"First Official Roster",tl_2_desc:"The first competitive lineup is formed and intensive training begins.",tl_3_title:"First Sponsors",tl_3_desc:"GlobalPata, ExitLag and Dubby join as official partners of the organization.",tl_4_title:"Official Jersey & Merch",tl_4_desc:"Launch of the first official jersey manufactured by Stardic with the GoMafia design.",tl_5_title:"New Roster — Current Era",tl_5_desc:"Sleepy, Rashy, Raveen, Kesko, Kvrmvs, Dunda, Hvscn and Janspend form the current lineup.",about_tag:"// Who We Are",about_title:"THE FAMILY",about_p1:"Mafia Wars is an esports organization founded in 2025 with a clear mission: to compete at the highest level in Rainbow Six Siege. We were born with the mindset that a team is more than a roster — it's a family.",about_p2:"With dedicated players, sponsors who believe in our vision, and a growing community, Mafia Wars is positioning itself as one of the most ambitious emerging organizations in the competitive scene.",about_p3:'<strong style="color:var(--red)">Domination is a family matter.</strong>',stat_players:"Players",stat_founded:"Founded",sponsors_tag:"// Our Partners",role_captain:"Captain",role_subcaptain:"Sub-Captain",streamers_title:"// Associated Streamers",contact_tag:"// Follow Us",contact_title:"JOIN THE FAMILY"},
+    pt: { nav_home:"Início",nav_roster:"Roster",nav_matches:"Partidas",nav_shop:"Loja",nav_timeline:"História",nav_about:"Sobre Nós",nav_contact:"Contato",hero_subtitle:"Dominar é questão de família",hero_btn_roster:"Ver Roster",hero_btn_shop:"Loja",hero_btn_join:"Junte-se",roster_tag:"// Line-Up Atual",roster_title:"NOSSO ROSTER",staff_title:"// Direção",role_investor:"Investidor",matches_tag:"// Resultados",matches_title:"PARTIDAS",match_upcoming:"PRÓXIMA",match_tbd:"A confirmar",shop_tag:"// Merch Oficial",shop_title:"LOJA",shop_badge:"NOVA",jersey_name:"Jersey Oficial 2025 — GoMafia",jersey_desc:"Camiseta oficial do time Mafia Wars. Design com chamas em vermelho e branco. Fabricada pela Stardic.",order_title:"Fazer Pedido",form_name:"Nome",form_surname:"Sobrenome",form_gamertag:"Gamertag (opcional)",form_size:"Tamanho",form_quantity:"Quantidade",form_address:"Endereço de envio",form_total:"TOTAL",form_submit:"Enviar Pedido",ph_name:"Seu nome",ph_surname:"Seu sobrenome",ph_email:"seu@email.com",ph_gamertag:"Seu nick para personalizar",ph_address:"Rua, número, cidade, CEP, país",order_success_title:"Pedido Recebido!",order_success_text:"Entraremos em contato por email para confirmar o pagamento e o envio. #GoMafia",timeline_tag:"// Nossa História",timeline_title:"TIMELINE",tl_1_title:"Fundação da Mafia Wars",tl_1_desc:"Nasce a organização com a visão de competir no mais alto nível em Rainbow Six Siege.",tl_2_title:"Primeiro Roster Oficial",tl_2_desc:"A primeira lineup competitiva é formada e os treinos intensivos começam.",tl_3_title:"Primeiros Patrocinadores",tl_3_desc:"GlobalPata, ExitLag e Dubby se juntam como parceiros oficiais da organização.",tl_4_title:"Jersey Oficial e Merch",tl_4_desc:"Lançamento da primeira jersey oficial fabricada pela Stardic com o design GoMafia.",tl_5_title:"Novo Roster — Era Atual",tl_5_desc:"Sleepy, Rashy, Raveen, Kesko, Kvrmvs, Dunda, Hvscn e Janspend formam a lineup atual.",about_tag:"// Quem Somos",about_title:"A FAMÍLIA",about_p1:"Mafia Wars é uma organização de esports fundada em 2025 com uma missão clara: competir no mais alto nível em Rainbow Six Siege. Nascemos com a mentalidade de que um time é mais do que um roster — é uma família.",about_p2:"Com jogadores dedicados, patrocinadores que confiam na nossa visão e uma comunidade crescente, Mafia Wars está se posicionando como uma das organizações emergentes mais ambiciosas do cenário competitivo.",about_p3:'<strong style="color:var(--red)">Dominar é questão de família.</strong>',stat_players:"Jogadores",stat_founded:"Fundado",sponsors_tag:"// Nossos Parceiros",role_captain:"Capitão",role_subcaptain:"Sub-Capitão",streamers_title:"// Streamers Associados",contact_tag:"// Siga-nos",contact_title:"JUNTE-SE À FAMÍLIA"},
+    de: { nav_home:"Start",nav_roster:"Roster",nav_matches:"Spiele",nav_shop:"Shop",nav_timeline:"Geschichte",nav_about:"Über Uns",nav_contact:"Kontakt",hero_subtitle:"Herrschaft ist Familiensache",hero_btn_roster:"Roster Ansehen",hero_btn_shop:"Shop",hero_btn_join:"Beitreten",roster_tag:"// Aktuelles Line-Up",roster_title:"UNSER ROSTER",staff_title:"// Führung",role_investor:"Investor",matches_tag:"// Ergebnisse",matches_title:"SPIELE",match_upcoming:"NÄCHSTES",match_tbd:"Wird bestätigt",shop_tag:"// Offizieller Merch",shop_title:"SHOP",shop_badge:"NEU",jersey_name:"Offizielles Trikot 2025 — GoMafia",jersey_desc:"Offizielles Mafia Wars Teamtrikot. Flammendesign in Rot und Weiß. Hergestellt von Stardic.",order_title:"Bestellen",form_name:"Vorname",form_surname:"Nachname",form_gamertag:"Gamertag (optional)",form_size:"Größe",form_quantity:"Menge",form_address:"Lieferadresse",form_total:"GESAMT",form_submit:"Bestellung Absenden",ph_name:"Dein Vorname",ph_surname:"Dein Nachname",ph_email:"deine@email.com",ph_gamertag:"Dein Nick",ph_address:"Straße, Nummer, Stadt, PLZ, Land",order_success_title:"Bestellung Eingegangen!",order_success_text:"Wir kontaktieren dich per E-Mail zur Bestätigung. #GoMafia",timeline_tag:"// Unsere Geschichte",timeline_title:"TIMELINE",tl_1_title:"Gründung von Mafia Wars",tl_1_desc:"Die Organisation wird mit der Vision gegründet, auf höchstem Niveau in Rainbow Six Siege zu konkurrieren.",tl_2_title:"Erstes Offizielles Roster",tl_2_desc:"Das erste kompetitive Lineup wird geformt und intensives Training beginnt.",tl_3_title:"Erste Sponsoren",tl_3_desc:"GlobalPata, ExitLag und Dubby werden offizielle Partner der Organisation.",tl_4_title:"Offizielles Trikot & Merch",tl_4_desc:"Launch des ersten offiziellen Trikots von Stardic mit dem GoMafia-Design.",tl_5_title:"Neues Roster — Aktuelle Ära",tl_5_desc:"Sleepy, Rashy, Raveen, Kesko, Kvrmvs, Dunda, Hvscn und Janspend bilden das aktuelle Lineup.",about_tag:"// Wer Wir Sind",about_title:"DIE FAMILIE",about_p1:"Mafia Wars ist eine Esports-Organisation, die 2025 gegründet wurde. Wir wurden mit der Mentalität geboren, dass ein Team mehr ist als ein Roster — es ist eine Familie.",about_p2:"Mit engagierten Spielern, Sponsoren die an unsere Vision glauben, und einer wachsenden Community positioniert sich Mafia Wars als eine der ambitioniertesten Organisationen.",about_p3:'<strong style="color:var(--red)">Herrschaft ist Familiensache.</strong>',stat_players:"Spieler",stat_founded:"Gegründet",sponsors_tag:"// Unsere Partner",role_captain:"Kapitän",role_subcaptain:"Vize-Kapitän",streamers_title:"// Assoziierte Streamer",contact_tag:"// Folge Uns",contact_title:"WERDE TEIL DER FAMILIE"}
 };
 let currentLangCode = 'es';
 function setLang(l) {
