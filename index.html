@@ -1594,10 +1594,7 @@ function loadNextMatch() {
             fillNextMatchAdminForm();
         });
     } else {
-        try {
-            const local = JSON.parse(localStorage.getItem('mw_nextMatch') || '{}');
-            nextMatchData = { opponent: local.opponent || '', event: local.event || '', date: local.date || '' };
-        } catch(e) { nextMatchData = { opponent: '', event: '', date: '' }; }
+        nextMatchData = { opponent: '', event: '', date: '' };
         renderNextMatch();
         fillNextMatchAdminForm();
     }
@@ -1621,9 +1618,8 @@ function saveNextMatch() {
     if (firebaseReady) {
         db.ref('nextMatch').set(data);
     } else {
-        localStorage.setItem('mw_nextMatch', JSON.stringify(data));
-        nextMatchData = data;
-        renderNextMatch();
+        alert('Firebase no está conectado. No se puede guardar.');
+        return;
     }
     // Visual feedback
     const btn = event.target;
