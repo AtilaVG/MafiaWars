@@ -538,11 +538,21 @@
             width: 8px; height: 8px; background: #22c55e; border-radius: 50%;
             box-shadow: 0 0 8px #22c55e; animation: livePulse 1.6s ease-in-out infinite;
         }
-        .live-bar.offline .live-dot { background: var(--red); box-shadow: 0 0 8px var(--red); }
+        .live-bar.offline .live-dot { background: var(--red); box-shadow: 0 0 8px var(--red); animation: none; }
         .live-bar .live-sep { width: 1px; height: 14px; background: rgba(255,255,255,0.15); }
         .live-bar .live-meta { color: var(--gray); }
         .live-bar .live-meta strong { color: var(--white); font-weight: 500; }
         @keyframes livePulse { 0%,100% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.4); opacity: 0.6; } }
+        .live-bar .live-link { color: var(--crimson); font-weight: 600; text-decoration: none; transition: color 0.3s; }
+        .live-bar .live-link:hover { color: #ff5555; }
+
+        /* Streamer LIVE indicator */
+        .streamer-card .live-badge { display: none; position: absolute; top: 12px; right: 12px; background: #22c55e; color: #fff; font-family: 'Oswald', sans-serif; font-size: 0.6rem; letter-spacing: 2px; padding: 3px 10px; border-radius: 3px; z-index: 5; animation: liveBadgePulse 2s ease-in-out infinite; }
+        .streamer-card.is-live .live-badge { display: block; }
+        .streamer-card.is-live { border-color: rgba(34,197,94,0.5) !important; box-shadow: 0 25px 50px rgba(34,197,94,0.15), 0 0 0 1px rgba(34,197,94,0.2) !important; }
+        .streamer-card.is-live .player-bg { background: linear-gradient(180deg, rgba(34,197,94,0.08) 0%, rgba(34,197,94,0.18) 100%) !important; }
+        .streamer-card.is-live .player-glow { background: radial-gradient(ellipse at bottom, rgba(34,197,94,0.2) 0%, transparent 70%) !important; }
+        @keyframes liveBadgePulse { 0%,100% { opacity: 1; } 50% { opacity: 0.7; } }
 
         /* ===== NEXT MATCH TICKER ===== */
         .next-match {
@@ -1030,7 +1040,8 @@
             <div class="staff-title" data-i18n="streamers_title">// Streamers Asociados</div>
             <div class="streamers-grid" style="grid-template-columns: repeat(2, 1fr); max-width: 560px;">
                 <!-- OGLOKYY -->
-                <div class="player-card streamer-card reveal" onclick="this.classList.toggle('popup-open')">
+                <div class="player-card streamer-card reveal" id="card-oglokyy" onclick="this.classList.toggle('popup-open')">
+                    <div class="live-badge">● LIVE</div>
                     <div class="player-role-badge badge-streamer">Streamer</div>
                     <div class="player-avatar"><div class="player-bg"><div class="player-glow"></div><span class="player-initial">OG</span></div></div>
                     <div class="player-info"><div class="player-name">OGLOKYY</div><div class="player-role">Streamer</div></div>
@@ -1040,7 +1051,8 @@
                     </div>
                 </div>
                 <!-- GM09X -->
-                <div class="player-card streamer-card reveal" onclick="this.classList.toggle('popup-open')">
+                <div class="player-card streamer-card reveal" id="card-gm09x" onclick="this.classList.toggle('popup-open')">
+                    <div class="live-badge">● LIVE</div>
                     <div class="player-role-badge badge-streamer">Streamer</div>
                     <div class="player-avatar"><div class="player-bg"><div class="player-glow"></div><span class="player-initial">GM</span></div></div>
                     <div class="player-info"><div class="player-name">GM09X</div><div class="player-role">Streamer</div></div>
@@ -1738,6 +1750,7 @@ function setLang(l) {
     document.querySelectorAll('.lang-option').forEach(b=>{ if(b.onclick.toString().includes("'"+l+"'")) b.classList.add('active'); });
     closeLang();
     renderMatches(matches);
+    if(typeof checkTwitchLive==='function') checkTwitchLive();
 }
 function syncLangState(){
     document.getElementById('langBtn').setAttribute('aria-expanded', document.getElementById('langSwitcher').classList.contains('open'));
@@ -1864,6 +1877,62 @@ function submitOrder(e){ e.preventDefault();
     const body=encodeURIComponent('Producto: '+d.product+'\nNombre: '+d.name+' '+d.surname+'\nEmail: '+d.email+'\nGamertag: '+(d.gamertag||'N/A')+'\nTalla: '+d.size+'\nCantidad: '+d.quantity+'\nTotal: '+d.total+'€\nDireccion: '+d.address);
     window.location.href='mailto:valorgonzalezalex@gmail.com?subject='+subj+'&body='+body;
 }
+
+// ===== TWITCH LIVE STATUS =====
+const mafiaStreamers = [
+    { username: 'oglokyy', displayName: 'OGLOKYY', cardId: 'card-oglokyy' },
+    { username: 'gm09x', displayName: 'GM09X', cardId: 'card-gm09x' }
+];
+
+const liveTexts = {
+    es: (name) => `EN DIRECTO — ${name} está streameando`,
+    en: (name) => `LIVE — ${name} is streaming`,
+    pt: (name) => `AO VIVO — ${name} está em live`,
+    br: (name) => `AO VIVO — ${name} tá na live`,
+    de: (name) => `LIVE — ${name} streamt gerade`
+};
+const offlineTexts = {
+    es: 'OFFLINE — Next stream soon',
+    en: 'OFFLINE — Next stream soon',
+    pt: 'OFFLINE — Próxima stream em breve',
+    br: 'OFFLINE — Próxima live em breve',
+    de: 'OFFLINE — Nächster Stream bald'
+};
+
+async function checkTwitchLive() {
+    const liveStreamers = [];
+    for (const s of mafiaStreamers) {
+        try {
+            const res = await fetch('https://decapi.me/twitch/uptime/' + s.username);
+            const text = await res.text();
+            const card = document.getElementById(s.cardId);
+            if (text && !text.toLowerCase().includes('offline') && !text.toLowerCase().includes('not found')) {
+                liveStreamers.push(s);
+                if (card) card.classList.add('is-live');
+            } else {
+                if (card) card.classList.remove('is-live');
+            }
+        } catch(e) {
+            const card = document.getElementById(s.cardId);
+            if (card) card.classList.remove('is-live');
+        }
+    }
+    const bar = document.getElementById('liveBar');
+    const status = document.getElementById('liveStatus');
+    if (liveStreamers.length > 0) {
+        bar.classList.remove('offline');
+        const names = liveStreamers.map(s => s.displayName).join(' & ');
+        const twitchUrl = 'https://twitch.tv/' + liveStreamers[0].username;
+        const getText = liveTexts[currentLangCode] || liveTexts.en;
+        status.innerHTML = getText(names) + ' <a href="' + twitchUrl + '" target="_blank" rel="noopener" class="live-link">▸ Watch</a>';
+    } else {
+        bar.classList.add('offline');
+        status.textContent = offlineTexts[currentLangCode] || offlineTexts.es;
+    }
+}
+
+checkTwitchLive();
+setInterval(checkTwitchLive, 60000);
 </script>
 </body>
 </html>
