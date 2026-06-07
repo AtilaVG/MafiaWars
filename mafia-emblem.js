@@ -82,6 +82,21 @@
                     model.scale.setScalar(scale);
                     model.position.set(-center.x * scale, -center.y * scale, -center.z * scale);
 
+                    // Generate simple environment map for PBR metallic reflections
+                    const pmremGen = new THREE.PMREMGenerator(renderer);
+                    const envScene = new THREE.Scene();
+                    envScene.background = new THREE.Color(0x111111);
+                    // Add subtle colored lights to env for reflections
+                    const envLight1 = new THREE.DirectionalLight(0xffffff, 0.5);
+                    envLight1.position.set(1, 1, 1);
+                    envScene.add(envLight1);
+                    const envLight2 = new THREE.DirectionalLight(0xe21a1a, 0.3);
+                    envLight2.position.set(-1, 0.5, -1);
+                    envScene.add(envLight2);
+                    envScene.add(new THREE.AmbientLight(0x333333, 1));
+                    const envMap = pmremGen.fromScene(envScene, 0.04).texture;
+                    pmremGen.dispose();
+
                     model.traverse((obj) => {
                         if (obj.isMesh && obj.material) {
                             const mats = Array.isArray(obj.material) ? obj.material : [obj.material];
@@ -89,7 +104,10 @@
                                 if (mat.map && 'colorSpace' in mat.map && THREE.SRGBColorSpace) {
                                     mat.map.colorSpace = THREE.SRGBColorSpace;
                                 }
-                                mat.envMapIntensity = 1.2;
+                                mat.envMap = envMap;
+                                mat.envMapIntensity = 1.5;
+                                mat.metalness = Math.min(mat.metalness, 0.4);
+                                mat.roughness = Math.max(mat.roughness, 0.5);
                                 mat.needsUpdate = true;
                             });
                         }
