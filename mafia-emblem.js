@@ -1,190 +1,199 @@
-/* ===== MAFIA WARS — 3D Emblem (logo finale) =====
-   Big rotating logo before the footer. Auto-rotates + reacts to scroll velocity. */
-
-import * as THREE from 'three';
-import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+/* ===== MAFIA WARS — 3D Emblem (lazy-loaded, mobile-aware) ===== */
 
 (function () {
     if (window.__MAFIA_EMBLEM_LOADED) return;
     window.__MAFIA_EMBLEM_LOADED = true;
 
-    const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     const container = document.getElementById('emblem-3d');
     if (!container) return;
 
-    // ---- Renderer ----
-    const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
-    renderer.setClearColor(0x000000, 0);
-    if ('outputColorSpace' in renderer && THREE.SRGBColorSpace) {
-        renderer.outputColorSpace = THREE.SRGBColorSpace;
+    const isMobile = window.innerWidth < 768 || /Mobi|Android/i.test(navigator.userAgent);
+    const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    // Mobile: show static emblem placeholder, skip WebGL entirely
+    if (isMobile) {
+        container.innerHTML = '<div style="width:100%;aspect-ratio:1/1;max-width:320px;margin:0 auto;display:flex;align-items:center;justify-content:center;font-family:Bebas Neue,sans-serif;font-size:clamp(4rem,12vw,6rem);letter-spacing:6px;color:rgba(226,26,26,0.15);text-shadow:0 0 60px rgba(226,26,26,0.3);user-select:none">MW</div>';
+        container.classList.add('ready');
+        return;
     }
-    renderer.toneMapping = THREE.ACESFilmicToneMapping;
-    renderer.toneMappingExposure = 1.15;
-    container.appendChild(renderer.domElement);
 
-    // ---- Scene + Camera ----
-    const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(28, 1, 0.1, 100);
-    camera.position.set(0, 0, 6.5);
-    camera.lookAt(0, 0, 0);
+    // Desktop: lazy-load Three.js only when section is scrolled into view
+    let loaded = false;
 
-    // ---- Lights ----
-    scene.add(new THREE.AmbientLight(0xffffff, 0.45));
+    const observer = new IntersectionObserver((entries) => {
+        if (entries[0].isIntersecting && !loaded) {
+            loaded = true;
+            observer.disconnect();
+            init3D();
+        }
+    }, { rootMargin: '200px' });
 
-    const key = new THREE.DirectionalLight(0xffffff, 1.4);
-    key.position.set(3, 3, 5);
-    scene.add(key);
+    observer.observe(container);
 
-    const rim1 = new THREE.DirectionalLight(0xe21a1a, 3.0);
-    rim1.position.set(-3, 2, -3);
-    scene.add(rim1);
+    function init3D() {
+        import('https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js').then(async (THREE) => {
+            const { GLTFLoader } = await import('https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/loaders/GLTFLoader.js');
 
-    const rim2 = new THREE.DirectionalLight(0xff4444, 1.8);
-    rim2.position.set(3, -2, -2);
-    scene.add(rim2);
+            // Renderer
+            const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.5));
+            renderer.setClearColor(0x000000, 0);
+            if ('outputColorSpace' in renderer && THREE.SRGBColorSpace) {
+                renderer.outputColorSpace = THREE.SRGBColorSpace;
+            }
+            renderer.toneMapping = THREE.ACESFilmicToneMapping;
+            renderer.toneMappingExposure = 1.15;
+            container.appendChild(renderer.domElement);
 
-    const top = new THREE.PointLight(0xffffff, 0.7, 8);
-    top.position.set(0, 3, 2);
-    scene.add(top);
+            // Scene + Camera
+            const scene = new THREE.Scene();
+            const camera = new THREE.PerspectiveCamera(28, 1, 0.1, 100);
+            camera.position.set(0, 0, 6.5);
+            camera.lookAt(0, 0, 0);
 
-    // ---- Root group ----
-    const root = new THREE.Group();
-    scene.add(root);
+            // Lights
+            scene.add(new THREE.AmbientLight(0xffffff, 0.45));
+            const key = new THREE.DirectionalLight(0xffffff, 1.4);
+            key.position.set(3, 3, 5); scene.add(key);
+            const rim1 = new THREE.DirectionalLight(0xe21a1a, 3.0);
+            rim1.position.set(-3, 2, -3); scene.add(rim1);
+            const rim2 = new THREE.DirectionalLight(0xff4444, 1.8);
+            rim2.position.set(3, -2, -2); scene.add(rim2);
+            const top = new THREE.PointLight(0xffffff, 0.7, 8);
+            top.position.set(0, 3, 2); scene.add(top);
 
-    // Loading overlay
-    const loadingEl = document.createElement('div');
-    loadingEl.className = 'emblem-loading';
-    loadingEl.innerHTML = '<div class="char-load-bar"><div class="char-load-fill"></div></div><div class="char-load-text">LOADING EMBLEM</div>';
-    container.appendChild(loadingEl);
-    const loadFill = loadingEl.querySelector('.char-load-fill');
-    const loadText = loadingEl.querySelector('.char-load-text');
+            const root = new THREE.Group();
+            scene.add(root);
 
-    let model = null;
+            // Loading overlay
+            const loadingEl = document.createElement('div');
+            loadingEl.className = 'emblem-loading';
+            loadingEl.innerHTML = '<div class="char-load-bar"><div class="char-load-fill"></div></div><div class="char-load-text">LOADING EMBLEM</div>';
+            container.appendChild(loadingEl);
+            const loadFill = loadingEl.querySelector('.char-load-fill');
+            const loadText = loadingEl.querySelector('.char-load-text');
 
-    // ---- Load GLB ----
-    const loader = new GLTFLoader();
-    loader.load(
-        'mafia-emblem.glb',
-        (gltf) => {
-            model = gltf.scene;
+            let model = null;
 
-            const box = new THREE.Box3().setFromObject(model);
-            const size = box.getSize(new THREE.Vector3());
-            const center = box.getCenter(new THREE.Vector3());
+            // Load GLB
+            const loader = new GLTFLoader();
+            loader.load(
+                'mafia-emblem.glb',
+                (gltf) => {
+                    model = gltf.scene;
+                    const box = new THREE.Box3().setFromObject(model);
+                    const size = box.getSize(new THREE.Vector3());
+                    const center = box.getCenter(new THREE.Vector3());
+                    const maxDim = Math.max(size.x, size.y, size.z);
+                    const scale = 2.5 / maxDim;
+                    model.scale.setScalar(scale);
+                    model.position.set(-center.x * scale, -center.y * scale, -center.z * scale);
 
-            // Scale to fit ~2.5 units in largest dimension
-            const maxDim = Math.max(size.x, size.y, size.z);
-            const scale = 2.5 / maxDim;
-            model.scale.setScalar(scale);
+                    model.traverse((obj) => {
+                        if (obj.isMesh && obj.material) {
+                            const mats = Array.isArray(obj.material) ? obj.material : [obj.material];
+                            mats.forEach(mat => {
+                                if (mat.map && 'colorSpace' in mat.map && THREE.SRGBColorSpace) {
+                                    mat.map.colorSpace = THREE.SRGBColorSpace;
+                                }
+                                mat.envMapIntensity = 1.2;
+                                mat.needsUpdate = true;
+                            });
+                        }
+                    });
 
-            // Center on origin
-            model.position.set(
-                -center.x * scale,
-                -center.y * scale,
-                -center.z * scale
+                    root.add(model);
+                    loadingEl.classList.add('done');
+                    setTimeout(() => loadingEl.remove(), 600);
+                    container.classList.add('ready');
+                },
+                (xhr) => {
+                    if (xhr.lengthComputable) {
+                        const pct = Math.min(100, Math.round((xhr.loaded / xhr.total) * 100));
+                        loadFill.style.width = pct + '%';
+                    }
+                },
+                (err) => {
+                    console.error('[mafia-emblem] load failed:', err);
+                    loadText.textContent = 'LOAD FAILED';
+                }
             );
 
-            model.traverse((obj) => {
-                if (obj.isMesh && obj.material) {
-                    const mats = Array.isArray(obj.material) ? obj.material : [obj.material];
-                    mats.forEach(mat => {
-                        if (mat.map && 'colorSpace' in mat.map && THREE.SRGBColorSpace) {
-                            mat.map.colorSpace = THREE.SRGBColorSpace;
-                        }
-                        mat.envMapIntensity = 1.2;
-                        mat.needsUpdate = true;
-                    });
-                }
-            });
-
-            root.add(model);
-            loadingEl.classList.add('done');
-            setTimeout(() => loadingEl.remove(), 600);
-            container.classList.add('ready');
-        },
-        (xhr) => {
-            if (xhr.lengthComputable) {
-                const pct = Math.min(100, Math.round((xhr.loaded / xhr.total) * 100));
-                loadFill.style.width = pct + '%';
+            // Sizing
+            function resize() {
+                const w = container.clientWidth, h = container.clientHeight;
+                renderer.setSize(w, h, false);
+                camera.aspect = w / h;
+                camera.updateProjectionMatrix();
             }
-        },
-        (err) => {
-            console.error('[mafia-emblem] load failed:', err);
-            loadText.textContent = 'LOAD FAILED';
-        }
-    );
+            resize();
+            let rP = false;
+            window.addEventListener('resize', () => {
+                if (rP) return; rP = true;
+                requestAnimationFrame(() => { resize(); rP = false; });
+            }, { passive: true });
 
-    // ---- Sizing ----
-    function resize() {
-        const w = container.clientWidth;
-        const h = container.clientHeight;
-        renderer.setSize(w, h, false);
-        camera.aspect = w / h;
-        camera.updateProjectionMatrix();
+            // Scroll velocity
+            let lastScrollY = window.scrollY, scrollVel = 0;
+            window.addEventListener('scroll', () => {
+                scrollVel = window.scrollY - lastScrollY;
+                lastScrollY = window.scrollY;
+            }, { passive: true });
+
+            // Mouse parallax
+            let mouseX = 0, mouseY = 0, lookX = 0, lookY = 0;
+            container.addEventListener('mousemove', (e) => {
+                const r = container.getBoundingClientRect();
+                mouseX = ((e.clientX - r.left) / r.width) - 0.5;
+                mouseY = ((e.clientY - r.top) / r.height) - 0.5;
+            });
+            container.addEventListener('mouseleave', () => { mouseX = 0; mouseY = 0; });
+
+            // Render loop — only when visible
+            const clock = new THREE.Clock();
+            let raf, spinSpeed = 0.5, isVisible = true;
+
+            const visObs = new IntersectionObserver((entries) => {
+                isVisible = entries[0].isIntersecting;
+                if (isVisible && !raf) animate();
+                else if (!isVisible && raf) { cancelAnimationFrame(raf); raf = null; clock.stop(); }
+            }, { threshold: 0 });
+            visObs.observe(container);
+
+            function animate() {
+                if (!isVisible) { raf = null; return; }
+                if (!clock.running) clock.start();
+                const dt = clock.getDelta();
+                const t = clock.getElapsedTime();
+
+                scrollVel *= 0.9;
+                const targetSpin = 0.5 + Math.abs(scrollVel) * 0.05;
+                spinSpeed += (targetSpin - spinSpeed) * 0.06;
+
+                if (model && !prefersReduced) {
+                    root.rotation.y += spinSpeed * dt;
+                    root.rotation.x = Math.sin(t * 0.7) * 0.08;
+                    root.rotation.z = Math.cos(t * 0.5) * 0.04;
+                }
+
+                lookX += (mouseX * 0.3 - lookX) * 0.06;
+                lookY += (-mouseY * 0.2 - lookY) * 0.06;
+                camera.position.x = lookX;
+                camera.position.y = lookY;
+                camera.lookAt(0, 0, 0);
+
+                renderer.render(scene, camera);
+                raf = requestAnimationFrame(animate);
+            }
+
+            document.addEventListener('visibilitychange', () => {
+                if (document.hidden && raf) { cancelAnimationFrame(raf); raf = null; }
+                else if (!document.hidden && isVisible && !raf) animate();
+            });
+        }).catch(err => {
+            console.error('[mafia-emblem] Three.js import failed:', err);
+            container.innerHTML = '<div style="width:100%;aspect-ratio:1/1;display:flex;align-items:center;justify-content:center;font-family:Bebas Neue,sans-serif;font-size:5rem;letter-spacing:6px;color:rgba(226,26,26,0.15)">MW</div>';
+            container.classList.add('ready');
+        });
     }
-    resize();
-
-    let rPending = false;
-    window.addEventListener('resize', () => {
-        if (rPending) return;
-        rPending = true;
-        requestAnimationFrame(() => { resize(); rPending = false; });
-    }, { passive: true });
-
-    // ---- Scroll velocity → spin speed ----
-    let lastScrollY = window.scrollY;
-    let scrollVel = 0;
-    window.addEventListener('scroll', () => {
-        scrollVel = window.scrollY - lastScrollY;
-        lastScrollY = window.scrollY;
-    }, { passive: true });
-
-    // ---- Mouse parallax ----
-    let mouseX = 0, mouseY = 0;
-    let lookX = 0, lookY = 0;
-    container.addEventListener('mousemove', (e) => {
-        const r = container.getBoundingClientRect();
-        mouseX = ((e.clientX - r.left) / r.width) - 0.5;
-        mouseY = ((e.clientY - r.top) / r.height) - 0.5;
-    });
-    container.addEventListener('mouseleave', () => { mouseX = 0; mouseY = 0; });
-
-    // ---- Render loop ----
-    const clock = new THREE.Clock();
-    let raf;
-    let spinSpeed = 0.5; // base spin
-
-    function animate() {
-        const dt = clock.getDelta();
-        const t = clock.getElapsedTime();
-
-        // Base spin + scroll-velocity bump
-        scrollVel *= 0.9; // decay
-        const targetSpin = 0.5 + Math.abs(scrollVel) * 0.05;
-        spinSpeed += (targetSpin - spinSpeed) * 0.06;
-
-        if (model && !prefersReduced) {
-            root.rotation.y += spinSpeed * dt;
-            // Subtle wobble
-            root.rotation.x = Math.sin(t * 0.7) * 0.08;
-            root.rotation.z = Math.cos(t * 0.5) * 0.04;
-        }
-
-        // Mouse parallax — lean toward cursor
-        lookX += (mouseX * 0.3 - lookX) * 0.06;
-        lookY += (-mouseY * 0.2 - lookY) * 0.06;
-        camera.position.x = lookX;
-        camera.position.y = lookY;
-        camera.lookAt(0, 0, 0);
-
-        renderer.render(scene, camera);
-        raf = requestAnimationFrame(animate);
-    }
-    animate();
-
-    document.addEventListener('visibilitychange', () => {
-        if (document.hidden && raf) { cancelAnimationFrame(raf); raf = null; }
-        else if (!document.hidden && !raf) animate();
-    });
 })();
