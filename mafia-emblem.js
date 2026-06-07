@@ -1,4 +1,4 @@
-/* ===== MAFIA WARS — 3D Emblem (lazy-loaded, mobile-aware) ===== */
+/* ===== MAFIA WARS — 3D Emblem (mobile-aware, optimized 565KB) ===== */
 
 (function () {
     if (window.__MAFIA_EMBLEM_LOADED) return;
@@ -17,22 +17,15 @@
         return;
     }
 
-    // Desktop: lazy-load Three.js only when section is scrolled into view
-    let loaded = false;
-
-    const observer = new IntersectionObserver((entries) => {
-        if (entries[0].isIntersecting && !loaded) {
-            loaded = true;
-            observer.disconnect();
-            init3D();
-        }
-    }, { rootMargin: '200px' });
-
-    observer.observe(container);
+    // Desktop: load Three.js and model directly (only 565KB GLB)
+    init3D();
 
     function init3D() {
-        import('https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js').then(async (THREE) => {
-            const { GLTFLoader } = await import('https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/loaders/GLTFLoader.js');
+        Promise.all([
+            import('three'),
+            import('three/addons/loaders/GLTFLoader.js')
+        ]).then(([THREE, GLTFModule]) => {
+            const GLTFLoader = GLTFModule.GLTFLoader;
 
             // Renderer
             const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
@@ -122,6 +115,7 @@
             // Sizing
             function resize() {
                 const w = container.clientWidth, h = container.clientHeight;
+                if (w === 0 || h === 0) return;
                 renderer.setSize(w, h, false);
                 camera.aspect = w / h;
                 camera.updateProjectionMatrix();
@@ -149,7 +143,7 @@
             });
             container.addEventListener('mouseleave', () => { mouseX = 0; mouseY = 0; });
 
-            // Render loop — only when visible
+            // Render loop — pause when not visible to save GPU
             const clock = new THREE.Clock();
             let raf, spinSpeed = 0.5, isVisible = true;
 
@@ -185,6 +179,9 @@
                 renderer.render(scene, camera);
                 raf = requestAnimationFrame(animate);
             }
+
+            // Start animation immediately
+            animate();
 
             document.addEventListener('visibilitychange', () => {
                 if (document.hidden && raf) { cancelAnimationFrame(raf); raf = null; }
