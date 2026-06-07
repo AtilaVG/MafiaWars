@@ -104,15 +104,16 @@
                                 if (mat.map && 'colorSpace' in mat.map && THREE.SRGBColorSpace) {
                                     mat.map.colorSpace = THREE.SRGBColorSpace;
                                 }
-                                // Force non-metallic matte rendering to avoid PBR holes
+                                // Clean matte rendering — no PBR complexity
                                 mat.envMap = envMap;
-                                mat.envMapIntensity = 0.8;
+                                mat.envMapIntensity = 0.6;
                                 mat.metalness = 0;
-                                mat.roughness = 0.7;
+                                mat.roughness = 0.85;
                                 mat.metalnessMap = null;
                                 mat.roughnessMap = null;
-                                mat.normalMapType = THREE.TangentSpaceNormalMap;
+                                mat.normalMap = null;
                                 mat.side = THREE.DoubleSide;
+                                mat.flatShading = false;
                                 mat.needsUpdate = true;
                             });
                         }
